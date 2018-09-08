@@ -61,7 +61,7 @@ class NumTest {
 
         // testing for 0
         x = new Num(0);
-        assertEquals("100: 0", x.toString());
+        assertEquals("100: 0", x.returnListAsString());
         assertFalse(x.isNegative);
     }
 
@@ -74,11 +74,51 @@ class NumTest {
     }
 
     @Test
+    void testProduct() {
+        Num x, y, z;
+
+        x = new Num("123");
+        y = new Num("456");
+        z = Num.product(x, y);
+        assertEquals("100: 88 60 5", z.returnListAsString());
+        assertFalse(z.isNegative);
+
+        x = new Num("0");
+        y = new Num("456");
+        z = Num.product(x, y);
+        assertEquals("100: 0", z.returnListAsString());
+
+        x = new Num("-123");
+        y = new Num("456");
+        z = Num.product(x, y);
+        assertEquals("100: 88 60 5", z.returnListAsString());
+        assertTrue(z.isNegative);
+
+        x = new Num("123");
+        y = new Num("-456");
+        z = Num.product(x, y);
+        assertEquals("100: 88 60 5", z.returnListAsString());
+        assertTrue(z.isNegative);
+
+        x = new Num("-123456789101112");
+        y = new Num("-456784658437654366");
+        z = Num.product(x, y);
+        assertEquals("100: 92 49 25 82 88 13 2 51 97 60 13 24 67 31 39 56", z.returnListAsString());
+        assertFalse(z.isNegative);
+
+        x = new Num("0");
+        y = new Num("0");
+        z = Num.product(x, y);
+        assertEquals("100: 0", z.returnListAsString());
+    }
+
+    @Test
     void testCompareTo() {
         // testing with same numbers
         Num x, y;
         x = new Num("24536789456123");
         y = new Num("24536789456123");
+
         assertEquals(0, x.compareTo(y));
 
         // testing with one positive and one negative number

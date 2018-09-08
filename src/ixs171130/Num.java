@@ -17,8 +17,15 @@ public class Num  implements Comparable<Num> {
     /**
      * Accepts a string, breaks it in to smaller elements (based on base) and store into arr
      *
-     * @param s Input string
+     * @params Input string
      */
+
+    public Num() {
+        arr = new ArrayList<>();
+        len = 0;
+        isNegative = false;
+    }
+
     public Num(String s) {
         arr = new ArrayList<>();
 
@@ -65,44 +72,30 @@ public class Num  implements Comparable<Num> {
                 arr.add(Long.parseLong(toAdd));
             }
         }
+
         len = arr.size();
     }
 
     public Num(long x) {
-
-<<<<<<< HEAD
-	if(x < 0 )
+        arr = new ArrayList<>();
+        long rem;
+        if( x == 0 ) {
+            arr.add(Long.parseLong("0"));
+        }
+	    else if(x < 0 )
     	{
     		x = -x;
     		isNegative = true;
     		
     	}
-
-	arr = new ArrayList<>();
-    	
-    	long rem; 
-    	
     	while(x > 0)
     	{
-    		rem = x%base; 
-    		
+    		rem = x%base;
     		arr.add(rem);
     		x = x/base;
     		
     	}
-=======
-        arr = new ArrayList<>();
-
-        long rem;
-
-        while (x > 0) {
-            rem = x % base;
-
-            arr.add(rem);
-            x = x / base;
-
-        }
->>>>>>> 5b930e392210f05eef8acadc296d381618cb7d6d
+    	len = arr.size();
     }
 
     public static Num add(Num a, Num b) {
@@ -113,8 +106,48 @@ public class Num  implements Comparable<Num> {
         return null;
     }
 
+    //need to work on optimization, currently O(n^2)
     public static Num product(Num a, Num b) {
-        return null;
+        if (a.base != b.base) {
+            throw new ArithmeticException("Bases of two number for multiplication has to be same");
+        }
+        Num product = new Num("0");
+        long carry =  0;
+        int  i=0, j=0;
+        for (long bi : b.arr) {
+            carry = 0;
+            j = 0;
+            for (long aj: a.arr) {
+                if (product.arr.size() < i + j + 1) {
+                    product.arr.add(i+j, 0l);
+                }
+                long num = product.arr.get(i + j) + carry + (aj * bi);
+                carry = num / a.base;
+                product.arr.set(i + j, num % a.base);
+                j++;
+            }
+            if (product.arr.size() < i + a.len + 1) {
+                product.arr.add(i + a.len, 0l);
+            }
+            product.arr.set(i + a.len , product.arr.get(i + a.len) + carry);
+            i++;
+        }
+
+        //updating len of product and negative sign of the product
+        product.len = product.arr.size();
+        if(a.isNegative && b.isNegative || (!a.isNegative && !b.isNegative)) {
+            product.isNegative = false;
+        }
+        else {
+            product.isNegative = true;
+        }
+
+        //removing trialing zeros are the end of list
+        while(product.len - 1 > 0 && product.arr.get(product.len -1) == 0) {
+            product.arr.remove(product.len-1);
+            product.len = product.arr.size();
+        }
+        return product;
     }
 
     // Use divide and conquer
