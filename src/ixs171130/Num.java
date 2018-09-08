@@ -72,7 +72,6 @@ public class Num  implements Comparable<Num> {
                 arr.add(Long.parseLong(toAdd));
             }
         }
-
         len = arr.size();
     }
 
@@ -86,7 +85,7 @@ public class Num  implements Comparable<Num> {
     	{
     		x = -x;
     		isNegative = true;
-    		
+
     	}
     	while(x > 0)
     	{
