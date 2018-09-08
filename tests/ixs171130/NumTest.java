@@ -39,6 +39,33 @@ class NumTest {
     }
 
     @Test
+    void testLongConstructorWithDefaultBase() {
+        // testing for a multiple of a base
+        Num x = new Num(10000);
+        assertEquals("100: 0 0 1", x.returnListAsString());
+
+        // testing for a small non-multiple of base
+        x = new Num(57);
+        assertEquals("100: 57", x.returnListAsString());
+        assertFalse(x.isNegative);
+
+        // testing for a small negative number
+        x = new Num(-5);
+        assertEquals("100: 5", x.returnListAsString());
+        assertTrue(x.isNegative);
+
+        // testing for a large negative number
+        x = new Num(-6589423);
+        assertEquals("100: 23 94 58 6", x.returnListAsString());
+        assertTrue(x.isNegative);
+
+        // testing for 0
+        x = new Num(0);
+        assertEquals("100: 0", x.toString());
+        assertFalse(x.isNegative);
+    }
+
+    @Test
     void testStringConstructorExceptions() {
         // nothing passed
         assertThrows(ArithmeticException.class, () -> {
