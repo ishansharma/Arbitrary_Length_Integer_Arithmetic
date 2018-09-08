@@ -31,6 +31,8 @@ public class Num  implements Comparable<Num> {
         if (s.indexOf("-") == 0) {
             isNegative = true;
             s = s.replace("-", "");
+        } else {
+            isNegative = false;
         }
 
         // getting number of zeroes in our base, this will only support bases that are power of 10.
@@ -116,8 +118,47 @@ public class Num  implements Comparable<Num> {
 
 
     // Utility functions
-    // compare "this" to "other": return +1 if this is greater, 0 if equal, -1 otherwise
+
+    /**
+     * Compare this number to other number.
+     * <p>
+     * This is possible using subtraction as well. But we don't have subtraction and covering the edge cases first
+     * should be a little faster.
+     *
+     * @param other Other number, also a Num
+     * @return +1 if this number is greater, 0 if numbers are equal, -1 if other number is greater
+     */
     public int compareTo(Num other) {
+        // ^ is bitwise XOR.
+        if (isNegative ^ other.isNegative) {
+            return (isNegative ? -1 : 1);  // if this number is negative, return -1. Else return 1.
+        }
+
+        // if we have same base for both
+        if (base == other.base) {
+            // If length of lists is different:
+            //  Case 1: Numbers are positive: bigger list represents bigger number
+            //  Case 2: Numbers are negative: smaller list represents bigger number
+            if (len != other.len) {
+                if (!isNegative && !other.isNegative) {
+                    return (len > other.len ? 1 : -1);
+                } else {
+                    return (len < other.len ? -1 : 1);
+                }
+            }
+
+            // If length of lists is same, we compare them starting at the tail. We stop when we find a smaller/larger
+            // number and return accordingly
+            for (int i = len - 1; i > 0; i--) {
+                if (!arr.get(i).equals(other.arr.get(i))) {
+                    return (arr.get(i) > other.arr.get(i) ? 1 : -1);
+                }
+            }
+        } else {
+            // TODO: Implement different base comparison.
+            throw new ArithmeticException("Numbers of different bases given");
+        }
+
         return 0;
     }
 
