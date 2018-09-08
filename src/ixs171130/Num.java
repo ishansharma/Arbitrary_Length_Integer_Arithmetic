@@ -70,18 +70,17 @@ public class Num  implements Comparable<Num> {
 
     public Num(long x) {
 
-	arr = new ArrayList<>();
-    	
-    	long rem; 
-    	
-    	while(x > 0)
-    	{
-    		rem = x%base; 
-    		
-    		arr.add(rem);
-    		x = x/base;
-    		
-    	}
+        arr = new ArrayList<>();
+
+        long rem;
+
+        while (x > 0) {
+            rem = x % base;
+
+            arr.add(rem);
+            x = x / base;
+
+        }
     }
 
     public static Num add(Num a, Num b) {
