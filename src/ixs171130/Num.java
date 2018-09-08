@@ -70,7 +70,7 @@ public class Num  implements Comparable<Num> {
 
     public Num(long x) {
 
-<<<<<<< HEAD
+
 	if(x < 0 )
     	{
     		x = -x;
@@ -90,19 +90,7 @@ public class Num  implements Comparable<Num> {
     		x = x/base;
     		
     	}
-=======
-        arr = new ArrayList<>();
 
-        long rem;
-
-        while (x > 0) {
-            rem = x % base;
-
-            arr.add(rem);
-            x = x / base;
-
-        }
->>>>>>> 5b930e392210f05eef8acadc296d381618cb7d6d
     }
 
     public static Num add(Num a, Num b) {
