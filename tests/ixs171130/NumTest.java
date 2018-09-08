@@ -39,10 +39,91 @@ class NumTest {
     }
 
     @Test
+    void testLongConstructorWithDefaultBase() {
+        // testing for a multiple of a base
+        Num x = new Num(10000);
+        assertEquals("100: 0 0 1", x.returnListAsString());
+
+        // testing for a small non-multiple of base
+        x = new Num(57);
+        assertEquals("100: 57", x.returnListAsString());
+        assertFalse(x.isNegative);
+
+        // testing for a small negative number
+        x = new Num(-5);
+        assertEquals("100: 5", x.returnListAsString());
+        assertTrue(x.isNegative);
+
+        // testing for a large negative number
+        x = new Num(-6589423);
+        assertEquals("100: 23 94 58 6", x.returnListAsString());
+        assertTrue(x.isNegative);
+
+        // testing for 0
+        x = new Num(0);
+        assertEquals("100: 0", x.toString());
+        assertFalse(x.isNegative);
+    }
+
+    @Test
     void testStringConstructorExceptions() {
         // nothing passed
         assertThrows(ArithmeticException.class, () -> {
             Num a = new Num("");
         });
+    }
+
+    @Test
+    void testCompareTo() {
+        // testing with same numbers
+        Num x, y;
+        x = new Num("24536789456123");
+        y = new Num("24536789456123");
+        assertEquals(0, x.compareTo(y));
+
+        // testing with one positive and one negative number
+        x = new Num("24536789456123");
+        y = new Num("-24536789456123");
+        assertEquals(1, x.compareTo(y));
+
+        // testing with one negative and one positive number
+        x = new Num("-24536789456123");
+        y = new Num("24536789456123");
+        assertEquals(-1, x.compareTo(y));
+
+        // testing with both negative numbers
+        x = new Num("-24536789456123");
+        y = new Num("-24536789456123");
+        assertEquals(0, x.compareTo(y));
+
+        // testing when first number is different length
+        x = new Num("1548964165749845");
+        y = new Num("145215");
+        assertEquals(1, x.compareTo(y));
+
+        // testing when second number is different length
+        x = new Num("126453165");
+        y = new Num("458198765165798435198794");
+        assertEquals(-1, x.compareTo(y));
+
+        // testing with different length numbers where one is +ve and one is -ve
+        x = new Num("15894561984651");
+        y = new Num("-5498124984231543516549846");
+        assertEquals(1, x.compareTo(y));
+
+        // just reverse of previous
+        assertEquals(-1, y.compareTo(x));
+
+        // both negative numbers
+        x = new Num("-15489165987");
+        y = new Num("-15489165987");
+        assertEquals(0, x.compareTo(y));
+        assertEquals(0, y.compareTo(x));
+
+        // two zeroes
+        x = new Num("0");
+        y = new Num("0");
+        assertEquals(0, x.compareTo(y));
+        assertEquals(0, y.compareTo(x));
     }
 }
