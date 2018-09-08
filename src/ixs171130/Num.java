@@ -67,6 +67,19 @@ public class Num  implements Comparable<Num> {
     }
 
     public Num(long x) {
+
+	arr = new ArrayList<>();
+    	
+    	long rem; 
+    	
+    	while(x > 0)
+    	{
+    		rem = x%base; 
+    		
+    		arr.add(rem);
+    		x = x/base;
+    		
+    	}
     }
 
     public static Num add(Num a, Num b) {
@@ -174,7 +187,7 @@ public class Num  implements Comparable<Num> {
 //        Num a = Num.power(x, 8);
 //        System.out.println(a);
 //        if(z != null) z.printList();
-        Num x = new Num("10965");
+        Num x = new Num(10965);
         x.printList();
     }
 }
