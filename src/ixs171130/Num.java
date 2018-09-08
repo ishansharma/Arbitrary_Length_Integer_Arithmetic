@@ -68,6 +68,13 @@ public class Num  implements Comparable<Num> {
 
     public Num(long x) {
 
+	if(x < 0 )
+    	{
+    		x = -x;
+    		isNegative = true;
+    		
+    	}
+
 	arr = new ArrayList<>();
     	
     	long rem; 
