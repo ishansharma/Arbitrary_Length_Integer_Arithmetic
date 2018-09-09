@@ -97,6 +97,20 @@ public class Num  implements Comparable<Num> {
     	len = arr.size();
     }
 
+
+	public static<Long> Long next(Iterator<Long> it)
+    	{
+    		if(it.hasNext())
+    		{
+    			return(it.next());
+    		}
+    		else
+    		{
+    			return(null);
+    		}
+    		
+   	 }
+
     public static Num add(Num a, Num b) {
 
         if (a.base != b.base) {
