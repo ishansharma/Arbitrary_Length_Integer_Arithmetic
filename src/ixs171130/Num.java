@@ -10,7 +10,7 @@ public class Num  implements Comparable<Num> {
 
     static long defaultBase = 100;  // Change as needed
     long base = defaultBase;  // Change as needed
-    List<Long> arr;  // array to store arbitrarily large integers
+    long[] arr;  // array to store arbitrarily large integers
     boolean isNegative;  // boolean flag to represent negative numbers
     int len;  // actual number of elements of array that are used;  number is stored in arr[0..len-1]
 
@@ -76,25 +76,34 @@ public class Num  implements Comparable<Num> {
     }
 
     public Num(long x) {
-        arr = new ArrayList<>();
-        long rem;
-        if( x == 0 ) {
-            arr.add(Long.parseLong("0"));
-        }
-	    else if(x < 0 )
+    	if(x < 0 )
     	{
     		x = -x;
     		isNegative = true;
-
-    	}
-    	while(x > 0)
-    	{
-    		rem = x%base;
-    		arr.add(rem);
-    		x = x/base;
     		
     	}
-    	len = arr.size();
+    	
+    	int num_digits = 0;
+    	long x_dup = x;
+    	
+    	
+    	
+    	while(x_dup > 0 )
+    	{
+    		num_digits++;
+    		x_dup = x_dup/base;
+    	}
+    	
+    	len = num_digits;
+    	
+    	arr = new long[len];
+    	
+    	
+    	for(int i = 0 ; i < len ; i++)
+    	{
+    		arr[i] = x%base;
+    		x = x/base;
+    	}
     }
 
 
