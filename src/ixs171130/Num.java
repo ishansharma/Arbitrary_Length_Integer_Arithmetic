@@ -5,7 +5,6 @@ package ixs171130;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class Num  implements Comparable<Num> {
 
@@ -13,156 +12,150 @@ public class Num  implements Comparable<Num> {
     long base = defaultBase;  // Change as needed
     long[] arr;  // array to store arbitrarily large integers
     boolean isNegative;  // boolean flag to represent negative numbers
-    int len;  // actual number of elements of array that are used;  number is stored in arr[0..len-1]
+    int len = 0;  // actual number of elements of array that are used;  number is stored in arr[0..len-1]
+//    static final Num MAX_VALUE = new Num("9223372036854775807");
 
     /**
      * Accepts a string, breaks it in to smaller elements (based on base) and store into arr
      *
      * @params Input string
      */
-    
+
     public Num()
     {
-    	
     }
 
-    public Num() {
-        arr = new ArrayList<>();
-        len = 0;
-        isNegative = false;
-    }
-
-    public Num(String s) {
-        arr = new ArrayList<>();
-
-        // if we are given an empty string, throw an exception
-        if (s.length() == 0) {
-            throw new ArithmeticException("Empty string given to constructor. Can't parse as a number");
-        }
-
-        // if number is negative, remove negative sign and mark isNegative true
-        if (s.indexOf("-") == 0) {
-            isNegative = true;
-            s = s.replace("-", "");
-        } else {
-            isNegative = false;
-        }
-
-        // getting number of zeroes in our base, this will only support bases that are power of 10.
-        // doing this for now because otherwise, we need to divide numbers and that's not implemented yet!
-        Integer zeros = ((Long) base).toString().length() - ((Long) base).toString().replace("0", "").length();
-
-        // if only zeroes are passed, store a zero in list
-        if (s.replace("0", "").length() == 0) {
-            arr.add(Long.parseLong("0"));
-        } else {
-            for (int i = s.length(); i > 0; i = i - zeros) {
-                int j = i - zeros;
-
-                // if we go below zero, we will be out of index
-                if (j < 0) {
-                    j = 0;
-                }
-
-                String toAdd = s.substring(j, i);
-
-                // initial zeroes are not needed
-                while (toAdd.indexOf("0") == 0) {
-                    toAdd = toAdd.substring(1);
-                    // don't remove last zero
-                    if (toAdd.length() == 1) {
-                        break;
-                    }
-                }
-
-                arr.add(Long.parseLong(toAdd));
-            }
-        }
-        len = arr.size();
-    }
+//    public Num(String s) {
+//        arr = new ArrayList<>();
+//
+//        // if we are given an empty string, throw an exception
+//        if (s.length() == 0) {
+//            throw new ArithmeticException("Empty string given to constructor. Can't parse as a number");
+//        }
+//
+//        // if number is negative, remove negative sign and mark isNegative true
+//        if (s.indexOf("-") == 0) {
+//            isNegative = true;
+//            s = s.replace("-", "");
+//        } else {
+//            isNegative = false;
+//        }
+//
+//        // getting number of zeroes in our base, this will only support bases that are power of 10.
+//        // doing this for now because otherwise, we need to divide numbers and that's not implemented yet!
+//        Integer zeros = ((Long) base).toString().length() - ((Long) base).toString().replace("0", "").length();
+//
+//        // if only zeroes are passed, store a zero in list
+//        if (s.replace("0", "").length() == 0) {
+//            arr.add(Long.parseLong("0"));
+//        } else {
+//            for (int i = s.length(); i > 0; i = i - zeros) {
+//                int j = i - zeros;
+//
+//                // if we go below zero, we will be out of index
+//                if (j < 0) {
+//                    j = 0;
+//                }
+//
+//                String toAdd = s.substring(j, i);
+//
+//                // initial zeroes are not needed
+//                while (toAdd.indexOf("0") == 0) {
+//                    toAdd = toAdd.substring(1);
+//                    // don't remove last zero
+//                    if (toAdd.length() == 1) {
+//                        break;
+//                    }
+//                }
+//
+//                arr.add(Long.parseLong(toAdd));
+//            }
+//        }
+//        len = arr.size();
+//    }
 
     public Num(long x) {
-    	
-    	
+
+
     	if(x == 0)
     	{
-    		len = 1; 
+    		len = 1;
     		arr = new long[len];
     		arr[0] = 0l;
     	}
     	else
     	{
-    		
-    		
+
+
     		if(x < 0 )
         	{
         		x = -x;
         		isNegative = true;
-        		
+
         	}
-        	
+
         	int num_digits = 0;
         	long x_dup = x;
-        	
-        	
-        	
+
+
+
         	while(x_dup > 0 )
         	{
         		num_digits++;
         		x_dup = x_dup/base;
         	}
-        	
+
         	len = num_digits;
-        	
+
         	arr = new long[len];
-        	
-        	
+
+
         	for(int i = 0 ; i < len ; i++)
         	{
         		arr[i] = x%base;
         		x = x/base;
         	}
-    		
+
     	}
-    	
-    	
+
+
     	//System.out.println(len);
-    	
+
     	//System.out.println(Arrays.toString(arr));
-    	
+
     }
 
 
 
     public static Num add(Num a, Num b) {
-    	
+
     	if (a.base != b.base) {
             throw new ArithmeticException("Bases of two number for addition has to be same");
         }
     	
     	
-    	if(a.isNegative && b.isNegative || (!a.isNegative && !b.isNegative)) 
+    	if(a.isNegative && b.isNegative || (!a.isNegative && !b.isNegative))
     	{
     		Long sum;
         	Long carry = 0L;
         	
         	int i = 0;
         	int j = 0;
-        	
+
         	Num add = new Num();
-        	
+
         	add.arr = new long[Math.max(a.len,b.len) + 1];
-        	
+
         	int counter = 0;
-        	
+
         	while( i < a.len &&  j < b.len)
         	{
         		
         		sum = a.arr[i] + b.arr[j] + carry;
-        		
+
         		add.arr[counter] = sum%defaultBase;
         		carry = sum/defaultBase;
-        		
+
         		i++;
         		j++;
         		counter++;
@@ -176,44 +169,44 @@ public class Num  implements Comparable<Num> {
         		carry = sum/defaultBase;
         		i++;
         		counter++;
-        		
+
         	}
         	
         	while(j < b.len)
         	{
-		        
+
         		sum = b.arr[j] + carry;
         		add.arr[counter] = sum%defaultBase;
         		carry = sum/defaultBase;
         		j++;
         		counter++;
-        		
+
         	}
         	
         	if(carry > 0 )
         		add.arr[counter] = carry;
         	else
         		add.arr[counter] = 0l;
-        
-        
+
+
         add.len = counter;
-        
+
         if(a.isNegative && b.isNegative)
     		add.isNegative = true;
-        
+
         System.out.println(add.len);
-    	
+
     	System.out.println(Arrays.toString(add.arr));
         	
         return(add);
-        	
+
     	}
     	else
     	{
     		return(subtract(a,b));
     	}
     	
-    	
+
     }
 
     public static Num subtract(Num a, Num b) {
@@ -225,30 +218,28 @@ public class Num  implements Comparable<Num> {
         if (a.base != b.base) {
             throw new ArithmeticException("Bases of two number for multiplication has to be same");
         }
-        Num product = new Num("0");
+
+        Num product;
+        long result[] = new long[a.len + b.len];
         long carry =  0;
         int  i=0, j=0;
         for (long bi : b.arr) {
             carry = 0;
             j = 0;
             for (long aj: a.arr) {
-                if (product.arr.size() < i + j + 1) {
-                    product.arr.add(i+j, 0l);
-                }
-                long num = product.arr.get(i + j) + carry + (aj * bi);
+                long num = result[i + j] + carry + (aj * bi);
                 carry = num / a.base;
-                product.arr.set(i + j, num % a.base);
+                result[i + j] = num % a.base;
                 j++;
             }
-            if (product.arr.size() < i + a.len + 1) {
-                product.arr.add(i + a.len, 0l);
-            }
-            product.arr.set(i + a.len , product.arr.get(i + a.len) + carry);
+            result[i + a.len] = result[i + a.len] + carry;
             i++;
         }
 
         //updating len of product and negative sign of the product
-        product.len = product.arr.size();
+        product = new Num();
+        product.arr = result;
+        product.len = product.arr.length;
         if(a.isNegative && b.isNegative || (!a.isNegative && !b.isNegative)) {
             product.isNegative = false;
         }
@@ -257,10 +248,11 @@ public class Num  implements Comparable<Num> {
         }
 
         //removing trialing zeros are the end of list
-        while(product.len - 1 > 0 && product.arr.get(product.len -1) == 0) {
-            product.arr.remove(product.len-1);
-            product.len = product.arr.size();
-        }
+//        while(product.len - 1 > 0 && product.arr[product.len -1] == 0) {
+//            product.arr.remove(product.len-1);
+//            product.len = product.arr.size();
+//        }
+
         return product;
     }
 
@@ -269,10 +261,26 @@ public class Num  implements Comparable<Num> {
         return null;
     }
 
-    // Use binary search to calculate a/b
-    public static Num divide(Num a, Num b) {
-        return null;
-    }
+//    // Use binary search to calculate a/b
+//    public static Num divide(Num dividend, Num divisor) {
+//        if (divisor.len == 1 && divisor.arr.get(0) == 0) {
+//            return Num.MAX_VALUE;
+//        }
+//
+//        if (dividend.len < divisor.len || (dividend.len == divisor.len &&
+//                dividend.arr.get(dividend.len -1) < divisor.arr.get(divisor.len - 1))) {
+//            return new Num(0);
+//        }
+//
+//        Num lower = new Num(0);
+//        Num higher = divisor;
+//
+//        while (true) {
+//
+//        }
+//
+//        return null;
+//    }
 
     // return a%b
     public static Num mod(Num a, Num b) {
@@ -298,34 +306,34 @@ public class Num  implements Comparable<Num> {
      */
     public int compareTo(Num other) {
         // ^ is bitwise XOR.
-        if (isNegative ^ other.isNegative) {
-            return (isNegative ? -1 : 1);  // if this number is negative, return -1. Else return 1.
-        }
-
-        // if we have same base for both
-        if (base == other.base) {
-            // If length of lists is different:
-            //  Case 1: Numbers are positive: bigger list represents bigger number
-            //  Case 2: Numbers are negative: smaller list represents bigger number
-            if (len != other.len) {
-                if (!isNegative && !other.isNegative) {
-                    return (len > other.len ? 1 : -1);
-                } else {
-                    return (len < other.len ? -1 : 1);
-                }
-            }
-
-            // If length of lists is same, we compare them starting at the tail. We stop when we find a smaller/larger
-            // number and return accordingly
-            for (int i = len - 1; i > 0; i--) {
-                if (!arr.get(i).equals(other.arr.get(i))) {
-                    return (arr.get(i) > other.arr.get(i) ? 1 : -1);
-                }
-            }
-        } else {
-            // TODO: Implement different base comparison.
-            throw new ArithmeticException("Numbers of different bases given");
-        }
+//        if (isNegative ^ other.isNegative) {
+//            return (isNegative ? -1 : 1);  // if this number is negative, return -1. Else return 1.
+//        }
+//
+//        // if we have same base for both
+//        if (base == other.base) {
+//            // If length of lists is different:
+//            //  Case 1: Numbers are positive: bigger list represents bigger number
+//            //  Case 2: Numbers are negative: smaller list represents bigger number
+//            if (len != other.len) {
+//                if (!isNegative && !other.isNegative) {
+//                    return (len > other.len ? 1 : -1);
+//                } else {
+//                    return (len < other.len ? -1 : 1);
+//                }
+//            }
+//
+//            // If length of lists is same, we compare them starting at the tail. We stop when we find a smaller/larger
+//            // number and return accordingly
+//            for (int i = len - 1; i > 0; i--) {
+//                if (!arr.get(i).equals(other.arr.get(i))) {
+//                    return (arr.get(i) > other.arr.get(i) ? 1 : -1);
+//                }
+//            }
+//        } else {
+//            // TODO: Implement different base comparison.
+//            throw new ArithmeticException("Numbers of different bases given");
+//        }
 
         return 0;
     }
@@ -369,7 +377,22 @@ public class Num  implements Comparable<Num> {
     }
 
     // Divide by 2, for using in binary search
-    public Num by2() {
+    public Num by2()
+    {
+//        if (len == 0) {
+//            return new Num(0);
+//        }
+//
+//        long[] arr2 = new long[len];
+//        Num result = new Num();
+//        long carry = 0;
+//
+//        //wont work for different bases need to fix that
+//        for (int  i = len -1; i >= 0; i--) {
+//            result.set(i, )
+//            arr2[i] = (carry * (10 ^ len) + arr.get(i))/2;
+//            carry = arr.get(i) % 2;
+//        }
         return null;
     }
 
@@ -396,7 +419,38 @@ public class Num  implements Comparable<Num> {
 //        Num a = Num.power(x, 8);
 //        System.out.println(a);
 //        if(z != null) z.printList();
-        Num x = new Num(10965);
-        x.printList();
+        //Num x = new Num(10965);
+        //x.printList();
+
+
+        Num x = new Num(123);
+        Num y = new Num(456);
+
+        Num z = product(x, y);
+        z.printList();
+
+
+        x = new Num(0);
+        y = new Num(456);
+        z = product(x, y);
+        z.printList();
+
+        x = new Num(-123);
+        y = new Num(456);
+        z = product(x, y);
+        z.printList();
+        System.out.println(z.isNegative);
+
+        x = new Num(-1234567888);
+        y = new Num(-456676878);
+        z = product(x, y);
+        z.printList();
+        System.out.println(z.isNegative);
+
+        x = new Num(0);
+        y = new Num(0);
+        z = product(x, y);
+        z.printList();
+        System.out.println(z.isNegative);
     }
 }
