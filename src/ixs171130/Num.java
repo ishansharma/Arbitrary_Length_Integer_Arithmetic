@@ -4,6 +4,7 @@
 package ixs171130;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Num  implements Comparable<Num> {
@@ -19,6 +20,11 @@ public class Num  implements Comparable<Num> {
      *
      * @params Input string
      */
+    
+    public Num()
+    {
+    	
+    }
 
     public Num() {
         arr = new ArrayList<>();
@@ -76,117 +82,137 @@ public class Num  implements Comparable<Num> {
     }
 
     public Num(long x) {
-    	if(x < 0 )
+    	
+    	
+    	if(x == 0)
     	{
-    		x = -x;
-    		isNegative = true;
+    		len = 1; 
+    		arr = new long[len];
+    		arr[0] = 0l;
+    	}
+    	else
+    	{
+    		
+    		
+    		if(x < 0 )
+        	{
+        		x = -x;
+        		isNegative = true;
+        		
+        	}
+        	
+        	int num_digits = 0;
+        	long x_dup = x;
+        	
+        	
+        	
+        	while(x_dup > 0 )
+        	{
+        		num_digits++;
+        		x_dup = x_dup/base;
+        	}
+        	
+        	len = num_digits;
+        	
+        	arr = new long[len];
+        	
+        	
+        	for(int i = 0 ; i < len ; i++)
+        	{
+        		arr[i] = x%base;
+        		x = x/base;
+        	}
     		
     	}
     	
-    	int num_digits = 0;
-    	long x_dup = x;
     	
+    	//System.out.println(len);
     	
+    	//System.out.println(Arrays.toString(arr));
     	
-    	while(x_dup > 0 )
-    	{
-    		num_digits++;
-    		x_dup = x_dup/base;
-    	}
-    	
-    	len = num_digits;
-    	
-    	arr = new long[len];
-    	
-    	
-    	for(int i = 0 ; i < len ; i++)
-    	{
-    		arr[i] = x%base;
-    		x = x/base;
-    	}
     }
 
 
-	public static<Long> Long next(Iterator<Long> it)
-    	{
-    		if(it.hasNext())
-    		{
-    			return(it.next());
-    		}
-    		else
-    		{
-    			return(null);
-    		}
-    		
-   	 }
 
     public static Num add(Num a, Num b) {
-
-        if (a.base != b.base) {
+    	
+    	if (a.base != b.base) {
             throw new ArithmeticException("Bases of two number for addition has to be same");
         }
     	
     	
-    	if(a.isNegative && b.isNegative || (!a.isNegative && !b.isNegative)) {
-    		
-    		Iterator<Long> it1 = a.arr.iterator();
-        	Iterator<Long> it2 = b.arr.iterator();
-        	
-        	 List<Long> outList = new ArrayList<>();
-        	 
-        	 Num add = new Num(0);
-        	 
-        	Long x1 =  next(it1);
-        	Long x2 =  next(it2);
-        	
-        	Long sum;
+    	if(a.isNegative && b.isNegative || (!a.isNegative && !b.isNegative)) 
+    	{
+    		Long sum;
         	Long carry = 0L;
         	
-        	while(x1 != null && x2 != null)
+        	int i = 0;
+        	int j = 0;
+        	
+        	Num add = new Num();
+        	
+        	add.arr = new long[Math.max(a.len,b.len) + 1];
+        	
+        	int counter = 0;
+        	
+        	while( i < a.len &&  j < b.len)
         	{
         		
-        		sum = x1 + x2 + carry; 
-        		add.arr.add(sum%defaultBase);
+        		sum = a.arr[i] + b.arr[j] + carry;
+        		
+        		add.arr[counter] = sum%defaultBase;
         		carry = sum/defaultBase;
-        		x1  = next(it1);
-        		x2 = next(it2);
+        		
+        		i++;
+        		j++;
+        		counter++;
         		
         	}
         	
-        	while(x1 != null)
+        	while(i < a.len)
         	{
-        		sum = x1 + carry; 
-        		add.arr.add(sum%defaultBase);
+        		sum = a.arr[i] + carry;
+        		add.arr[counter] = sum%defaultBase;
         		carry = sum/defaultBase;
-        		x1 = next(it1);
+        		i++;
+        		counter++;
+        		
         	}
         	
-        	while(x2 != null)
+        	while(j < b.len)
         	{
-        		sum = x2 + carry; 
-        		add.arr.add(sum%defaultBase);
+		        
+        		sum = b.arr[j] + carry;
+        		add.arr[counter] = sum%defaultBase;
         		carry = sum/defaultBase;
-        		x2 = next(it2);
+        		j++;
+        		counter++;
+        		
         	}
         	
         	if(carry > 0 )
-        		add.arr.add(carry);
+        		add.arr[counter] = carry;
+        	else
+        		add.arr[counter] = 0l;
+        
+        
+        add.len = counter;
+        
+        if(a.isNegative && b.isNegative)
+    		add.isNegative = true;
+        
+        System.out.println(add.len);
+    	
+    	System.out.println(Arrays.toString(add.arr));
         	
+        return(add);
         	
-        	add.len = add.arr.size();
-        	
-        	if(a.isNegative && b.isNegative)
-        	{
-        		add.isNegative = true;
-        	}
-        	
-            return add;
-            
-        }
+    	}
     	else
     	{
     		return(subtract(a,b));
     	}
+    	
     	
     }
 
