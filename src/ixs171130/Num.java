@@ -98,7 +98,73 @@ public class Num  implements Comparable<Num> {
     }
 
     public static Num add(Num a, Num b) {
-        return null;
+
+        if (a.base != b.base) {
+            throw new ArithmeticException("Bases of two number for addition has to be same");
+        }
+    	
+    	
+    	if(a.isNegative && b.isNegative || (!a.isNegative && !b.isNegative)) {
+    		
+    		Iterator<Long> it1 = a.arr.iterator();
+        	Iterator<Long> it2 = b.arr.iterator();
+        	
+        	 List<Long> outList = new ArrayList<>();
+        	 
+        	 Num add = new Num(0);
+        	 
+        	Long x1 =  next(it1);
+        	Long x2 =  next(it2);
+        	
+        	Long sum;
+        	Long carry = 0L;
+        	
+        	while(x1 != null && x2 != null)
+        	{
+        		
+        		sum = x1 + x2 + carry; 
+        		add.arr.add(sum%defaultBase);
+        		carry = sum/defaultBase;
+        		x1  = next(it1);
+        		x2 = next(it2);
+        		
+        	}
+        	
+        	while(x1 != null)
+        	{
+        		sum = x1 + carry; 
+        		add.arr.add(sum%defaultBase);
+        		carry = sum/defaultBase;
+        		x1 = next(it1);
+        	}
+        	
+        	while(x2 != null)
+        	{
+        		sum = x2 + carry; 
+        		add.arr.add(sum%defaultBase);
+        		carry = sum/defaultBase;
+        		x2 = next(it2);
+        	}
+        	
+        	if(carry > 0 )
+        		add.arr.add(carry);
+        	
+        	
+        	add.len = add.arr.size();
+        	
+        	if(a.isNegative && b.isNegative)
+        	{
+        		add.isNegative = true;
+        	}
+        	
+            return add;
+            
+        }
+    	else
+    	{
+    		return(subtract(a,b));
+    	}
+    	
     }
 
     public static Num subtract(Num a, Num b) {
