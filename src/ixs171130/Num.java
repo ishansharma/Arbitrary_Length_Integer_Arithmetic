@@ -21,68 +21,58 @@ public class Num  implements Comparable<Num> {
      * @params Input string
      */
 
-    public Num() {
-        len = 0;
-        isNegative = false;
+    public Num()
+    {
     }
 
-    public Num(String s) {
-        if (s.indexOf("-") == 0) {
-            isNegative = true;
-            s = s.replace("-", "");
-        } else {
-            isNegative = false;
-        }
-
-        /* Why next two lines are the way they are:
-         *  We need to consider the decimal digits. Initially, I was blindly adding 1 to result of expression inside
-         *  Math.ceil() but when there are even number of digits, we needlessly added an extra slot in the array
-         *  which would have caused issues with operations that need size to function properly e.g. subtraction
-         */
-        int size;
-        size = (int) Math.ceil(((double) s.length() / (((Long) base).toString().length() - 1)));
-
-        arr = new long[size];
-
-        // if we are given an empty string, throw an exception
-        if (s.length() == 0) {
-            throw new ArithmeticException("Empty string given to constructor. Can't parse as a number");
-        }
-
-        // getting number of zeroes in our base, this will only support bases that are power of 10.
-        // doing this for now because otherwise, we need to divide numbers and that's not implemented yet!
-        int zeros = ((Long) base).toString().length() - ((Long) base).toString().replace("0", "").length();
-
-        // if only zeroes are passed, store a zero
-        if (s.replace("0", "").length() == 0) {
-            arr = new long[1];
-        } else {
-            int index = 0;
-            for (int i = s.length(); i > 0; i = i - zeros) {
-                int j = i - zeros;
-
-                // if we go below zero, we will be out of index
-                if (j < 0) {
-                    j = 0;
-                }
-
-                String toAdd = s.substring(j, i);
-
-                // initial zeroes are not needed
-                while (toAdd.indexOf("0") == 0) {
-                    toAdd = toAdd.substring(1);
-                    // don't remove last zero
-                    if (toAdd.length() == 1) {
-                        break;
-                    }
-                }
-
-                arr[index] = (Long.parseLong(toAdd));
-                index++;
-            }
-        }
-        len = arr.length;
-    }
+//    public Num(String s) {
+//        arr = new ArrayList<>();
+//
+//        // if we are given an empty string, throw an exception
+//        if (s.length() == 0) {
+//            throw new ArithmeticException("Empty string given to constructor. Can't parse as a number");
+//        }
+//
+//        // if number is negative, remove negative sign and mark isNegative true
+//        if (s.indexOf("-") == 0) {
+//            isNegative = true;
+//            s = s.replace("-", "");
+//        } else {
+//            isNegative = false;
+//        }
+//
+//        // getting number of zeroes in our base, this will only support bases that are power of 10.
+//        // doing this for now because otherwise, we need to divide numbers and that's not implemented yet!
+//        Integer zeros = ((Long) base).toString().length() - ((Long) base).toString().replace("0", "").length();
+//
+//        // if only zeroes are passed, store a zero in list
+//        if (s.replace("0", "").length() == 0) {
+//            arr.add(Long.parseLong("0"));
+//        } else {
+//            for (int i = s.length(); i > 0; i = i - zeros) {
+//                int j = i - zeros;
+//
+//                // if we go below zero, we will be out of index
+//                if (j < 0) {
+//                    j = 0;
+//                }
+//
+//                String toAdd = s.substring(j, i);
+//
+//                // initial zeroes are not needed
+//                while (toAdd.indexOf("0") == 0) {
+//                    toAdd = toAdd.substring(1);
+//                    // don't remove last zero
+//                    if (toAdd.length() == 1) {
+//                        break;
+//                    }
+//                }
+//
+//                arr.add(Long.parseLong(toAdd));
+//            }
+//        }
+//        len = arr.size();
+//    }
 
     public Num(long x) {
 
@@ -142,13 +132,13 @@ public class Num  implements Comparable<Num> {
     	if (a.base != b.base) {
             throw new ArithmeticException("Bases of two number for addition has to be same");
         }
-
-
+    	
+    	
     	if(a.isNegative && b.isNegative || (!a.isNegative && !b.isNegative))
     	{
     		Long sum;
         	Long carry = 0L;
-
+        	
         	int i = 0;
         	int j = 0;
 
@@ -160,7 +150,7 @@ public class Num  implements Comparable<Num> {
 
         	while( i < a.len &&  j < b.len)
         	{
-
+        		
         		sum = a.arr[i] + b.arr[j] + carry;
 
         		add.arr[counter] = sum%defaultBase;
@@ -169,9 +159,9 @@ public class Num  implements Comparable<Num> {
         		i++;
         		j++;
         		counter++;
-
+        		
         	}
-
+        	
         	while(i < a.len)
         	{
         		sum = a.arr[i] + carry;
@@ -181,7 +171,7 @@ public class Num  implements Comparable<Num> {
         		counter++;
 
         	}
-
+        	
         	while(j < b.len)
         	{
 
@@ -192,7 +182,7 @@ public class Num  implements Comparable<Num> {
         		counter++;
 
         	}
-
+        	
         	if(carry > 0 )
         		add.arr[counter] = carry;
         	else
@@ -207,7 +197,7 @@ public class Num  implements Comparable<Num> {
         System.out.println(add.len);
 
     	System.out.println(Arrays.toString(add.arr));
-
+        	
         return(add);
 
     	}
@@ -215,7 +205,7 @@ public class Num  implements Comparable<Num> {
     	{
     		return(subtract(a,b));
     	}
-
+    	
 
     }
 
@@ -268,7 +258,22 @@ public class Num  implements Comparable<Num> {
 
     // Use divide and conquer
     public static Num power(Num a, long n) {
-        return null;
+    	
+    	if(n== 0 )
+    	{
+    		return new Num(1);
+    	}
+    	
+    	Num temp; 
+    	
+    	temp = power(a,n/2);
+    	
+    	if(n%2 == 0)
+    		return(product(temp,temp));
+    	else
+    		return( product(a, product(temp,temp) ) );
+    	
+    	
     }
 
 //    // Use binary search to calculate a/b
@@ -368,9 +373,7 @@ public class Num  implements Comparable<Num> {
 
         output.append(String.valueOf(base)).append(": ");
         for (Long n : arr) {
-            if (n != null) {
-                output.append(n.toString()).append(" ");
-            }
+            output.append(n.toString()).append(" ");
         }
 
         return output.toString().trim();
