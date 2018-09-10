@@ -379,21 +379,24 @@ public class Num  implements Comparable<Num> {
     // Divide by 2, for using in binary search
     public Num by2()
     {
-//        if (len == 0) {
-//            return new Num(0);
-//        }
-//
-//        long[] arr2 = new long[len];
-//        Num result = new Num();
-//        long carry = 0;
-//
-//        //wont work for different bases need to fix that
-//        for (int  i = len -1; i >= 0; i--) {
-//            result.set(i, )
-//            arr2[i] = (carry * (10 ^ len) + arr.get(i))/2;
-//            carry = arr.get(i) % 2;
-//        }
-        return null;
+        if (len == 0) {
+            return new Num(0);
+        }
+
+        System.out.println(" length : " + len);
+        long[] arr2 = new long[len];
+        Num result = new Num();
+        long carry = 0;
+
+        //need to test for different bases
+        for (int  i = len-1; i >= 0; i--) {
+            arr2[i] = (carry * base + arr[i])/2;
+            carry = arr[i] % 2;
+        }
+        result.arr = arr2;
+        result.len = arr2.length;
+        result.isNegative = isNegative;
+        return result;
     }
 
     // Evaluate an expression in postfix and return resulting number
@@ -427,30 +430,36 @@ public class Num  implements Comparable<Num> {
         Num y = new Num(456);
 
         Num z = product(x, y);
-        z.printList();
+//        z.printList();
+//
+//
+//        x = new Num(0);
+//        y = new Num(456);
+//        z = product(x, y);
+//        z.printList();
+//
+//        x = new Num(-123);
+//        y = new Num(456);
+//        z = product(x, y);
+//        z.printList();
+//        System.out.println(z.isNegative);
+//
+//        x = new Num(-1234567888);
+//        y = new Num(-456676878);
+//        z = product(x, y);
+//        z.printList();
+//        System.out.println(z.isNegative);
+//
+//        x = new Num(0);
+//        y = new Num(0);
+//        z = product(x, y);
+//        z.printList();
+//        System.out.println(z.isNegative);
 
-
-        x = new Num(0);
-        y = new Num(456);
-        z = product(x, y);
-        z.printList();
-
-        x = new Num(-123);
-        y = new Num(456);
-        z = product(x, y);
+        x = new Num(34364374);
+        z = x.by2();
         z.printList();
         System.out.println(z.isNegative);
 
-        x = new Num(-1234567888);
-        y = new Num(-456676878);
-        z = product(x, y);
-        z.printList();
-        System.out.println(z.isNegative);
-
-        x = new Num(0);
-        y = new Num(0);
-        z = product(x, y);
-        z.printList();
-        System.out.println(z.isNegative);
     }
 }
