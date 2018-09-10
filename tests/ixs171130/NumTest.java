@@ -141,6 +141,25 @@ class NumTest {
     }
 
     @Test
+    void testSubtractionWhenYIsGreaterThanX() {
+        Num x, y, result;
+
+        // with a smaller number
+        x = new Num(-5);
+        y = new Num("3");
+        result = Num.subtract(x, y);
+        assertEquals("-8", result.toString());
+        assertTrue(result.isNegative);
+
+        // with large numbers
+        x = new Num("-54787498494159798465456465498168798165498465198798465");
+        y = new Num("549879851894548978951987891489789459549545594554564");
+        result = Num.subtract(x, y);
+        assertEquals("-55337378346054347444408453389658587625048010793353029", result.toString());
+        assertTrue(result.isNegative);
+    }
+
+    @Test
     void testProduct() {
         Num x, y, z;
 

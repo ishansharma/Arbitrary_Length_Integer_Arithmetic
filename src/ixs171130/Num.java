@@ -233,6 +233,7 @@ public class Num  implements Comparable<Num> {
             if (a.isNegative && !b.isNegative) {
                 a.isNegative = false;
                 result = add(a, b);
+                result.isNegative = true;
             } else if (!a.isNegative && !b.isNegative) {
                 result = null;
             } else {  // both a and b are negative
