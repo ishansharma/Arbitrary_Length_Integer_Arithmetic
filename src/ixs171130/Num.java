@@ -258,12 +258,24 @@ public class Num  implements Comparable<Num> {
         return product;
     }
 
+    /**
+     * Some operations leave trailing zeroes at end of the array. This function removes them and returns a new array
+     *
+     * @param arr long[] array
+     * @return array without trailing zeroes
+     */
     private static long[] removeTrailingSpaces(long[] arr) {
         int size = arr.length;
         int newSize = size - 1;
         while (arr[newSize] == 0 && newSize > 0) {  // second condition is there to avoid going to -1 in some cases
             newSize--;
         }
+
+        // don't do anything is there are no zeroes to be removed
+        if (newSize == size - 1) {
+            return arr;
+        }
+
         long[] result;
         if (newSize == 0) {  // handling when we had all zeroes in the result
             result = new long[1];
