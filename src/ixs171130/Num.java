@@ -133,88 +133,101 @@ public class Num  implements Comparable<Num> {
 
     }
 
+    /**
+     * Initialize from an array
+     *
+     * @param array
+     */
+    public Num(long[] array) {
+        arr = array;
+        len = array.length;
+    }
+
+    public void setPositive() {
+        isNegative = false;
+    }
 
 
     public static Num add(Num a, Num b) {
 
-    	if (a.base != b.base) {
+        if (a.base != b.base) {
             throw new ArithmeticException("Bases of two number for addition has to be same");
         }
-    	
-    	
-    	if(a.isNegative && b.isNegative || (!a.isNegative && !b.isNegative))
-    	{
-    		Long sum;
-        	Long carry = 0L;
-        	
-        	int i = 0;
-        	int j = 0;
-
-        	Num add = new Num();
-
-        	add.arr = new long[Math.max(a.len,b.len) + 1];
-
-        	int counter = 0;
-
-        	while( i < a.len &&  j < b.len)
-        	{
-        		
-        		sum = a.arr[i] + b.arr[j] + carry;
-
-        		add.arr[counter] = sum%defaultBase;
-        		carry = sum/defaultBase;
-
-        		i++;
-        		j++;
-        		counter++;
-        		
-        	}
-        	
-        	while(i < a.len)
-        	{
-        		sum = a.arr[i] + carry;
-        		add.arr[counter] = sum%defaultBase;
-        		carry = sum/defaultBase;
-        		i++;
-        		counter++;
-
-        	}
-        	
-        	while(j < b.len)
-        	{
-
-        		sum = b.arr[j] + carry;
-        		add.arr[counter] = sum%defaultBase;
-        		carry = sum/defaultBase;
-        		j++;
-        		counter++;
-
-        	}
-        	
-        	if(carry > 0 )
-        		add.arr[counter] = carry;
-        	else
-        		add.arr[counter] = 0l;
 
 
-        add.len = counter;
+        if(a.isNegative && b.isNegative || (!a.isNegative && !b.isNegative)) {
+            Long sum;
+            Long carry = 0L;
 
-        if(a.isNegative && b.isNegative)
-    		add.isNegative = true;
+            int i = 0;
+            int j = 0;
+
+            Num add = new Num();
+
+            add.arr = new long[Math.max(a.len,b.len) + 1];
+
+            int counter = 0;
+
+            while( i < a.len &&  j < b.len) {
+
+                sum = a.arr[i] + b.arr[j] + carry;
+
+                add.arr[counter] = sum%defaultBase;
+                carry = sum/defaultBase;
+
+                i++;
+                j++;
+                counter++;
+
+            }
+
+            while(i < a.len) {
+                sum = a.arr[i] + carry;
+                add.arr[counter] = sum%defaultBase;
+                carry = sum/defaultBase;
+                i++;
+                counter++;
+
+            }
+
+            while(j < b.len) {
+
+                sum = b.arr[j] + carry;
+                add.arr[counter] = sum%defaultBase;
+                carry = sum/defaultBase;
+                j++;
+                counter++;
+
+            }
+
+            if(carry > 0 )
+                add.arr[counter] = carry;
+            else
+                add.arr[counter] = 0l;
+
+
+            add.len = counter;
+
+            if(a.isNegative && b.isNegative)
+                add.isNegative = true;
 
             add.arr = removeTrailingZeros(add.arr);
-        	
-        return(add);
 
-    	}
-    	else
-    	{
-    		return(subtract(a,b));
-    	}
-    	
+            return(add);
+
+        } else {
+            return(subtract(a,b));
+        }
+
 
     }
 
+    /**
+     * Subtract b from a and return a Num
+     * @param a First number
+     * @param b Second number
+     * @return result for a - b
+     */
     public static Num subtract(Num a, Num b) {
         int comparison = a.compareTo(b);
         Num result;
@@ -225,9 +238,9 @@ public class Num  implements Comparable<Num> {
                 b.isNegative = false;
                 result = add(a, b);
             } else if (a.isNegative && b.isNegative) {
-                result = null;
+                result = subtractInternal(b, a);
             } else {  // if we are here, both a and b are positive
-                result = null;
+                result = subtractInternal(a, b);
             }
         } else {  // b is bigger
             if (a.isNegative && !b.isNegative) {
@@ -235,12 +248,58 @@ public class Num  implements Comparable<Num> {
                 result = add(a, b);
                 result.isNegative = true;
             } else if (!a.isNegative && !b.isNegative) {
-                result = null;
+                result = subtractInternal(b, a);
+                result.isNegative = true;
             } else {  // both a and b are negative
-                result = null;
+                result = subtractInternal(a, b);
+                result.isNegative = true;
             }
         }
         return result;
+    }
+
+    /**
+     * Handles the actual subtraction for a - b. a has to be bigger than b.
+     *
+     * @param a Larger number
+     * @param b Smaller number
+     * @return result for a - b
+     */
+    private static Num subtractInternal(Num a, Num b) {
+        int i = 0;
+        long[] result = new long[(a.len > b.len) ? a.len : b.len];
+        Num resultNum;
+
+        // subtract till both arrays have numbers
+        while (i < a.len && i < b.len) {
+            if (a.arr[i] >= b.arr[i]) {  // if number in a is bigger, we just subtract and save that to result
+                result[i] = a.arr[i] - b.arr[i];
+            } else { // if number in b is bigger, we take a carry and then subtract
+                a.arr[i] += a.base;
+                a.arr[i + 1]--;  // carry is taken from next digit of a
+                result[i] = a.arr[i] - b.arr[i];
+            }
+
+            i++;
+        }
+
+        // copy rest of from longer array to result
+        long[] copySource;
+        if ((i + 1) == a.len) {
+            copySource = b.arr;
+        } else {
+            copySource = a.arr;
+        }
+
+        while (i < copySource.length) {
+            result[i] = copySource[i];
+            i++;
+        }
+
+        resultNum = new Num(result);
+        resultNum.isNegative = false;
+
+        return resultNum;
     }
 
     //need to work on optimization, currently O(n^2)
@@ -384,18 +443,26 @@ public class Num  implements Comparable<Num> {
             //  Case 1: Numbers are positive: bigger list represents bigger number
             //  Case 2: Numbers are negative: smaller list represents bigger number
             if (len != other.len) {
-                if (!isNegative && !other.isNegative) {
+                if (!isNegative) {
                     return (len > other.len ? 1 : -1);
                 } else {
-                    return (len < other.len ? -1 : 1);
+                    return (len > other.len ? -1 : 1);
                 }
             }
 
             // If length of lists is same, we compare them starting at the tail. We stop when we find a smaller/larger
             // number and return accordingly
-            for (int i = len - 1; i > 0; i--) {
-                if (arr[i] != other.arr[i]) {
-                    return (arr[i] > other.arr[i] ? 1 : -1);
+            if (!isNegative) {
+                for (int i = len - 1; i >= 0; i--) {
+                    if (arr[i] != other.arr[i]) {
+                        return (arr[i] > other.arr[i] ? 1 : -1);
+                    }
+                }
+            } else {
+                for (int i = len - 1; i >= 0; i--) {
+                    if (arr[i] != other.arr[i]) {
+                        return (arr[i] > other.arr[i] ? -1 : 1);
+                    }
                 }
             }
         } else {

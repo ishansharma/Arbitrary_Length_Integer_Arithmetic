@@ -141,8 +141,43 @@ class NumTest {
         // when x is positive and y is negative, with a large number
         x = new Num("15248597586485754648891564");
         y = new Num("-48915198495619845641984");
-        result = Num.add(x, y);  // 15297512784981374494533548
-        assertEquals("100: 48 35 53 94 44 37 81 49 78 12 75 29 15", result.returnListAsString());
+        result = Num.subtract(x, y);  // 15297512784981374494533548
+        assertEquals("15297512784981374494533548", result.toString());
+        assertFalse(result.isNegative);
+
+        // when x and y both are negative
+        x = new Num("-15");
+        y = new Num("-30");
+        result = Num.subtract(x, y);
+        assertEquals("15", result.toString());
+        assertFalse(result.isNegative);
+
+        // when x and y are both negative, differ by 1
+        x = new Num("-16");
+        y = new Num("-17");
+        result = Num.subtract(x, y);
+        assertEquals("1", result.toString());
+        assertFalse(result.isNegative);
+
+        // when x and y both are negative, large numbers
+        x = new Num("-152485618");
+        y = new Num("-15949549846514987951598798484987");
+        result = Num.subtract(x, y);
+        assertEquals("15949549846514987951598645999369", result.toString());
+        assertFalse(result.isNegative);
+
+        // when x and y are both positive
+        x = new Num("15249846519841321984984");
+        y = new Num("15489156949841897");
+        result = Num.subtract(x, y);
+        assertEquals("15249831030684372143087", result.toString());
+        assertFalse(result.isNegative);
+
+        // x, y both positive, with smaller number
+        x = new Num(10);
+        y = new Num(9);
+        result = Num.subtract(x, y);
+        assertEquals("1", result.toString());
         assertFalse(result.isNegative);
     }
 
@@ -162,6 +197,40 @@ class NumTest {
         y = new Num("549879851894548978951987891489789459549545594554564");
         result = Num.subtract(x, y);
         assertEquals("-55337378346054347444408453389658587625048010793353029", result.toString());
+        assertTrue(result.isNegative);
+
+        // when both are positive
+        x = new Num(10);
+        y = new Num(20);
+        result = Num.subtract(x, y);
+        assertEquals("-10", result.toString());
+        assertTrue(result.isNegative);
+
+        // when both are positive, large numbers
+        x = new Num("4854894654984651978964598798444");
+        y = new Num("65469849468489484749654897894151654651654654656");
+        result = Num.subtract(x, y);
+        assertEquals("-65469849468489479894760242909499675687055856212", result.toString());
+        assertTrue(result.isNegative);
+
+        // when both are positive, with only 1 digit more in second
+        x = new Num("4564984351654321894132165743516546546");
+        y = new Num("45649843516543218941321657435165465462");
+        result = Num.subtract(x, y);
+        assertEquals("-41084859164888897047189491691648918916", result.toString());
+        assertTrue(result.isNegative);
+
+        // when both are negative
+        x = new Num("-4519816518498165496546");
+        y = new Num("-959849465");
+        result = Num.subtract(x, y);
+        assertEquals("-4519816518497205647081", result.toString());
+
+        // when both are negative, small difference
+        x = new Num("-15");
+        y = new Num(-5);
+        result = Num.subtract(x, y);
+        assertEquals("-10", result.toString());
         assertTrue(result.isNegative);
     }
 
@@ -257,6 +326,23 @@ class NumTest {
         y = new Num("0");
         assertEquals(0, x.compareTo(y));
         assertEquals(0, y.compareTo(x));
+
+        // two negative numbers smaller than base
+        x = new Num("-15");
+        y = new Num("-30");
+        assertEquals(1, x.compareTo(y));
+        assertEquals(-1, y.compareTo(x));
+
+        // one positive, one negative. Both smaller than base
+        x = new Num("15");
+        y = new Num("-30");
+        assertEquals(1, x.compareTo(y));
+        assertEquals(-1, y.compareTo(x));
+
+        x = new Num("-152485618");
+        y = new Num("-15949549846514987951598798484987");
+        assertEquals(1, x.compareTo(y));
+        assertEquals(-1, y.compareTo(x));
     }
 
     @Test
