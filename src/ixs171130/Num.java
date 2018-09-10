@@ -15,64 +15,71 @@ public class Num  implements Comparable<Num> {
     int len = 0;  // actual number of elements of array that are used;  number is stored in arr[0..len-1]
     static final Num MAX_VALUE = new Num(2147483647);
 
+    public Num() {
+    }
+
     /**
      * Accepts a string, breaks it in to smaller elements (based on base) and store into arr
      *
      * @params Input string
      */
+    public Num(String s) {
+        if (s.indexOf("-") == 0) {
+            isNegative = true;
+            s = s.replace("-", "");
+        } else {
+            isNegative = false;
+        }
 
-    public Num()
-    {
+        /* Why next two lines are the way they are:
+         *  We need to consider the decimal digits. Initially, I was blindly adding 1 to result of expression inside
+         *  Math.ceil() but when there are even number of digits, we needlessly added an extra slot in the array
+         *  which would have caused issues with operations that need size to function properly e.g. subtraction
+         */
+        int size;
+        size = (int) Math.ceil(((double) s.length() / (((Long) base).toString().length() - 1)));
+
+        arr = new long[size];
+
+        // if we are given an empty string, throw an exception
+        if (s.length() == 0) {
+            throw new ArithmeticException("Empty string given to constructor. Can't parse as a number");
+        }
+
+        // getting number of zeroes in our base, this will only support bases that are power of 10.
+        // doing this for now because otherwise, we need to divide numbers and that's not implemented yet!
+        int zeros = ((Long) base).toString().length() - ((Long) base).toString().replace("0", "").length();
+
+        // if only zeroes are passed, store a zero
+        if (s.replace("0", "").length() == 0) {
+            arr = new long[1];
+        } else {
+            int index = 0;
+            for (int i = s.length(); i > 0; i = i - zeros) {
+                int j = i - zeros;
+
+                // if we go below zero, we will be out of index
+                if (j < 0) {
+                    j = 0;
+                }
+
+                String toAdd = s.substring(j, i);
+
+                // initial zeroes are not needed
+                while (toAdd.indexOf("0") == 0) {
+                    toAdd = toAdd.substring(1);
+                    // don't remove last zero
+                    if (toAdd.length() == 1) {
+                        break;
+                    }
+                }
+
+                arr[index] = (Long.parseLong(toAdd));
+                index++;
+            }
+        }
+        len = arr.length;
     }
-
-//    public Num(String s) {
-//        arr = new ArrayList<>();
-//
-//        // if we are given an empty string, throw an exception
-//        if (s.length() == 0) {
-//            throw new ArithmeticException("Empty string given to constructor. Can't parse as a number");
-//        }
-//
-//        // if number is negative, remove negative sign and mark isNegative true
-//        if (s.indexOf("-") == 0) {
-//            isNegative = true;
-//            s = s.replace("-", "");
-//        } else {
-//            isNegative = false;
-//        }
-//
-//        // getting number of zeroes in our base, this will only support bases that are power of 10.
-//        // doing this for now because otherwise, we need to divide numbers and that's not implemented yet!
-//        Integer zeros = ((Long) base).toString().length() - ((Long) base).toString().replace("0", "").length();
-//
-//        // if only zeroes are passed, store a zero in list
-//        if (s.replace("0", "").length() == 0) {
-//            arr.add(Long.parseLong("0"));
-//        } else {
-//            for (int i = s.length(); i > 0; i = i - zeros) {
-//                int j = i - zeros;
-//
-//                // if we go below zero, we will be out of index
-//                if (j < 0) {
-//                    j = 0;
-//                }
-//
-//                String toAdd = s.substring(j, i);
-//
-//                // initial zeroes are not needed
-//                while (toAdd.indexOf("0") == 0) {
-//                    toAdd = toAdd.substring(1);
-//                    // don't remove last zero
-//                    if (toAdd.length() == 1) {
-//                        break;
-//                    }
-//                }
-//
-//                arr.add(Long.parseLong(toAdd));
-//            }
-//        }
-//        len = arr.size();
-//    }
 
     public Num(long x) {
 
@@ -237,25 +244,9 @@ public class Num  implements Comparable<Num> {
             i++;
         }
 
-        //removing trailing zeros are the end of list
-        int newSize = size - 1;
-        while (result[newSize] == 0 && newSize > 0) {  // second condition is there to avoid going to -1 in some cases
-            newSize--;
-        }
-        long[] resultWithoutTrailingZeros;
-        if (newSize == 0) {  // handling when we had all zeroes in the result
-            resultWithoutTrailingZeros = new long[1];
-        } else {  // copying over all non-zero elements to new, smaller array
-            resultWithoutTrailingZeros = new long[newSize + 1];
-            for (int k = 0; k <= newSize; k++) {
-                resultWithoutTrailingZeros[k] = result[k];
-            }
-        }
-
-
         //updating len of product and negative sign of the product
         product = new Num();
-        product.arr = resultWithoutTrailingZeros;
+        product.arr = removeTrailingSpaces(result);
         product.len = product.arr.length;
         if(a.isNegative && b.isNegative || (!a.isNegative && !b.isNegative)) {
             product.isNegative = false;
@@ -265,6 +256,25 @@ public class Num  implements Comparable<Num> {
         }
 
         return product;
+    }
+
+    private static long[] removeTrailingSpaces(long[] arr) {
+        int size = arr.length;
+        int newSize = size - 1;
+        while (arr[newSize] == 0 && newSize > 0) {  // second condition is there to avoid going to -1 in some cases
+            newSize--;
+        }
+        long[] result;
+        if (newSize == 0) {  // handling when we had all zeroes in the result
+            result = new long[1];
+        } else {  // copying over all non-zero elements to new, smaller array
+            result = new long[newSize + 1];
+            for (int k = 0; k <= newSize; k++) {
+                result[k] = arr[k];
+            }
+        }
+
+        return result;
     }
 
     // Use divide and conquer
