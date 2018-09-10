@@ -13,7 +13,7 @@ public class Num  implements Comparable<Num> {
     long[] arr;  // array to store arbitrarily large integers
     boolean isNegative;  // boolean flag to represent negative numbers
     int len = 0;  // actual number of elements of array that are used;  number is stored in arr[0..len-1]
-//    static final Num MAX_VALUE = new Num("9223372036854775807");
+    static final Num MAX_VALUE = new Num(2147483647);
 
     /**
      * Accepts a string, breaks it in to smaller elements (based on base) and store into arr
@@ -262,13 +262,13 @@ public class Num  implements Comparable<Num> {
     }
 
 //    // Use binary search to calculate a/b
-//    public static Num divide(Num dividend, Num divisor) {
-//        if (divisor.len == 1 && divisor.arr.get(0) == 0) {
+    public static Num divide(Num dividend, Num divisor) {
+//        if (divisor.len == 1 && divisor.arr[0] == 0) {
 //            return Num.MAX_VALUE;
 //        }
 //
 //        if (dividend.len < divisor.len || (dividend.len == divisor.len &&
-//                dividend.arr.get(dividend.len -1) < divisor.arr.get(divisor.len - 1))) {
+//                dividend.arr[dividend.len -1] < divisor.arr[divisor.len - 1])) {
 //            return new Num(0);
 //        }
 //
@@ -276,11 +276,11 @@ public class Num  implements Comparable<Num> {
 //        Num higher = divisor;
 //
 //        while (true) {
-//
+////            Num mid = (subtract())
 //        }
 //
-//        return null;
-//    }
+        return null;
+    }
 
     // return a%b
     public static Num mod(Num a, Num b) {
@@ -305,35 +305,35 @@ public class Num  implements Comparable<Num> {
      * @return +1 if this number is greater, 0 if numbers are equal, -1 if other number is greater
      */
     public int compareTo(Num other) {
-        // ^ is bitwise XOR.
-//        if (isNegative ^ other.isNegative) {
-//            return (isNegative ? -1 : 1);  // if this number is negative, return -1. Else return 1.
-//        }
-//
-//        // if we have same base for both
-//        if (base == other.base) {
-//            // If length of lists is different:
-//            //  Case 1: Numbers are positive: bigger list represents bigger number
-//            //  Case 2: Numbers are negative: smaller list represents bigger number
-//            if (len != other.len) {
-//                if (!isNegative && !other.isNegative) {
-//                    return (len > other.len ? 1 : -1);
-//                } else {
-//                    return (len < other.len ? -1 : 1);
-//                }
-//            }
-//
-//            // If length of lists is same, we compare them starting at the tail. We stop when we find a smaller/larger
-//            // number and return accordingly
-//            for (int i = len - 1; i > 0; i--) {
-//                if (!arr.get(i).equals(other.arr.get(i))) {
-//                    return (arr.get(i) > other.arr.get(i) ? 1 : -1);
-//                }
-//            }
-//        } else {
-//            // TODO: Implement different base comparison.
-//            throw new ArithmeticException("Numbers of different bases given");
-//        }
+//         ^ is bitwise XOR.
+        if (isNegative ^ other.isNegative) {
+            return (isNegative ? -1 : 1);  // if this number is negative, return -1. Else return 1.
+        }
+
+        // if we have same base for both
+        if (base == other.base) {
+            // If length of lists is different:
+            //  Case 1: Numbers are positive: bigger list represents bigger number
+            //  Case 2: Numbers are negative: smaller list represents bigger number
+            if (len != other.len) {
+                if (!isNegative && !other.isNegative) {
+                    return (len > other.len ? 1 : -1);
+                } else {
+                    return (len < other.len ? -1 : 1);
+                }
+            }
+
+            // If length of lists is same, we compare them starting at the tail. We stop when we find a smaller/larger
+            // number and return accordingly
+            for (int i = len - 1; i > 0; i--) {
+                if (arr[i] != other.arr[i]) {
+                    return (arr[i] > other.arr[i] ? 1 : -1);
+                }
+            }
+        } else {
+            // TODO: Implement different base comparison.
+            throw new ArithmeticException("Numbers of different bases given");
+        }
 
         return 0;
     }
