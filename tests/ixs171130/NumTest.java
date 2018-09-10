@@ -192,4 +192,19 @@ class NumTest {
         assertEquals(0, x.compareTo(y));
         assertEquals(0, y.compareTo(x));
     }
+
+    @Test
+    void testToString() {
+        // zero!
+        Num x = new Num(0);
+        assertEquals("0", x.toString());
+
+        // negative number
+        x = new Num("-15981587984132549845216879841321063846321068949684");
+        assertEquals("-15981587984132549845216879841321063846321068949684", x.toString());
+
+        // a large random number
+        x = new Num("1123446891891879512198946152197987494");
+        assertEquals("1123446891891879512198946152197987494", x.toString());
+    }
 }

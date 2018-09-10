@@ -3,6 +3,7 @@
 
 package ixs171130;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -408,7 +409,23 @@ public class Num  implements Comparable<Num> {
 
     // Return number to a string in base 10
     public String toString() {
-        return null;
+        BigInteger result, currentMultiplication, currentTerm, currentBase;
+        currentBase = BigInteger.valueOf(base);
+        result = BigInteger.valueOf(0);
+
+        for (int i = 0; i < arr.length; i++) {
+            currentTerm = BigInteger.valueOf(arr[i]);
+            currentMultiplication = currentBase.pow(i).multiply(currentTerm);
+            result = result.add(currentMultiplication);
+        }
+
+        // handle the sign
+        StringBuilder output = new StringBuilder();
+        if (isNegative) {
+            output.append("-");
+        }
+        output.append(result.toString());
+        return output.toString();
     }
 
     public long base() { return base; }
