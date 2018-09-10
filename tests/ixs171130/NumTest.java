@@ -88,14 +88,14 @@ class NumTest {
         x = new Num(123);
         y = new Num("4567");
         result = Num.add(x, y);
-        assertEquals("100: 90 46", result.returnListAsString());
+        assertEquals("4690", result.toString());
         assertFalse(result.isNegative);
 
         // add two large numbers
         x = new Num("15248695712464651165");
         y = new Num("125485784");
         result = Num.add(x, y);
-        assertEquals("100: 49 69 13 90 25 71 95 86 24 15", result.returnListAsString());
+        assertEquals("15248695712590136949", result.toString());
         assertFalse(result.isNegative);
     }
 
@@ -106,7 +106,7 @@ class NumTest {
         x = new Num("123");
         y = new Num("456");
         z = Num.product(x, y);
-        assertEquals("100: 88 60 5", z.returnListAsString());
+        assertEquals("56088", z.toString());
         assertFalse(z.isNegative);
 
         x = new Num("0");
@@ -117,19 +117,19 @@ class NumTest {
         x = new Num("-123");
         y = new Num("456");
         z = Num.product(x, y);
-        assertEquals("100: 88 60 5", z.returnListAsString());
+        assertEquals("-56088", z.toString());
         assertTrue(z.isNegative);
 
         x = new Num("123");
         y = new Num("-456");
         z = Num.product(x, y);
-        assertEquals("100: 88 60 5", z.returnListAsString());
+        assertEquals("-56088", z.toString());
         assertTrue(z.isNegative);
 
         x = new Num("-123456789101112");
         y = new Num("-456784658437654366");
         z = Num.product(x, y);
-        assertEquals("100: 92 49 25 82 88 13 2 51 97 60 13 24 67 31 39 56", z.returnListAsString());
+        assertEquals("56393167241360975102138882254992", z.toString());
         assertFalse(z.isNegative);
 
         x = new Num("0");
