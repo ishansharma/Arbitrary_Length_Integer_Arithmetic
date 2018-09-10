@@ -132,6 +132,13 @@ class NumTest {
     void testSubtractionWhenXIsGreaterThanY() {
         Num x, y, result;
 
+        // testing when y is zero
+        x = new Num("460");
+        y = new Num(0);
+        result = Num.subtract(x, y);
+        assertEquals("460", result.toString());
+        assertFalse(result.isNegative);
+
         // when x is positive and y is negative, with a smaller number
         x = new Num("5");
         y = new Num("-3");
@@ -184,6 +191,13 @@ class NumTest {
     @Test
     void testSubtractionWhenYIsGreaterThanX() {
         Num x, y, result;
+
+        // testing when x is zero
+        x = new Num(0);
+        y = new Num(460);
+        result = Num.subtract(x, y);
+        assertEquals("-460", result.toString());
+        assertTrue(result.isNegative);
 
         // with a smaller number
         x = new Num(-5);

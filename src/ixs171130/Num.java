@@ -285,7 +285,7 @@ public class Num  implements Comparable<Num> {
 
         // copy rest of from longer array to result
         long[] copySource;
-        if ((i + 1) == a.len) {
+        if (a.len < b.len) {
             copySource = b.arr;
         } else {
             copySource = a.arr;
