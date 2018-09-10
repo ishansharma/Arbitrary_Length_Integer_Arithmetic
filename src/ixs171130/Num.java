@@ -230,7 +230,8 @@ public class Num  implements Comparable<Num> {
         }
 
         Num product;
-        long result[] = new long[a.len + b.len];
+        int size = a.len + b.len;
+        long result[] = new long[size];
         long carry =  0;
         int  i=0, j=0;
         for (long bi : b.arr) {
@@ -246,9 +247,25 @@ public class Num  implements Comparable<Num> {
             i++;
         }
 
+        //removing trailing zeros are the end of list
+        int newSize = size - 1;
+        while (result[newSize] == 0 && newSize > 0) {  // second condition is there to avoid going to -1 in some cases
+            newSize--;
+        }
+        long[] resultWithoutTrailingZeros;
+        if (newSize == 0) {  // handling when we had all zeroes in the result
+            resultWithoutTrailingZeros = new long[1];
+        } else {  // copying over all non-zero elements to new, smaller array
+            resultWithoutTrailingZeros = new long[newSize + 1];
+            for (int k = 0; k <= newSize; k++) {
+                resultWithoutTrailingZeros[k] = result[k];
+            }
+        }
+
+
         //updating len of product and negative sign of the product
         product = new Num();
-        product.arr = result;
+        product.arr = resultWithoutTrailingZeros;
         product.len = product.arr.length;
         if(a.isNegative && b.isNegative || (!a.isNegative && !b.isNegative)) {
             product.isNegative = false;
@@ -256,12 +273,6 @@ public class Num  implements Comparable<Num> {
         else {
             product.isNegative = true;
         }
-
-        //removing trialing zeros are the end of list
-//        while(product.len - 1 > 0 && product.arr[product.len -1] == 0) {
-//            product.arr.remove(product.len-1);
-//            product.len = product.arr.size();
-//        }
 
         return product;
     }
