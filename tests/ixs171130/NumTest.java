@@ -29,6 +29,12 @@ class NumTest {
         assertEquals("100: 31 67 54 12", b.returnListAsString());
         assertTrue(b.isNegative);
 
+        // large number with single digits in middle
+        b = new Num("1015578");
+        assertEquals("100: 78 55 1 1", b.returnListAsString());
+        assertEquals("1015578", b.toString());
+        assertFalse(b.isNegative);
+
         // testing for zero
         Num c = new Num("0");
         assertEquals("100: 0", c.returnListAsString());
