@@ -201,9 +201,7 @@ public class Num  implements Comparable<Num> {
         if(a.isNegative && b.isNegative)
     		add.isNegative = true;
 
-        System.out.println(add.len);
-
-    	System.out.println(Arrays.toString(add.arr));
+            add.arr = removeTrailingZeros(add.arr);
         	
         return(add);
 
@@ -246,7 +244,7 @@ public class Num  implements Comparable<Num> {
 
         //updating len of product and negative sign of the product
         product = new Num();
-        product.arr = removeTrailingSpaces(result);
+        product.arr = removeTrailingZeros(result);
         product.len = product.arr.length;
         if(a.isNegative && b.isNegative || (!a.isNegative && !b.isNegative)) {
             product.isNegative = false;
@@ -264,7 +262,7 @@ public class Num  implements Comparable<Num> {
      * @param arr long[] array
      * @return array without trailing zeroes
      */
-    private static long[] removeTrailingSpaces(long[] arr) {
+    private static long[] removeTrailingZeros(long[] arr) {
         int size = arr.length;
         int newSize = size - 1;
         while (arr[newSize] == 0 && newSize > 0) {  // second condition is there to avoid going to -1 in some cases
@@ -277,13 +275,9 @@ public class Num  implements Comparable<Num> {
         }
 
         long[] result;
-        if (newSize == 0) {  // handling when we had all zeroes in the result
-            result = new long[1];
-        } else {  // copying over all non-zero elements to new, smaller array
-            result = new long[newSize + 1];
-            for (int k = 0; k <= newSize; k++) {
-                result[k] = arr[k];
-            }
+        result = new long[newSize + 1];
+        for (int k = 0; k <= newSize; k++) {
+            result[k] = arr[k];
         }
 
         return result;

@@ -74,6 +74,32 @@ class NumTest {
     }
 
     @Test
+    void testAdd() {
+        Num x, y, result;
+
+        // add two zeroes
+        x = new Num(0);
+        y = new Num(0);
+        result = Num.add(x, y);
+        assertEquals("100: 0", result.returnListAsString());
+        assertFalse(result.isNegative);
+
+        // add two small numbers
+        x = new Num(123);
+        y = new Num("4567");
+        result = Num.add(x, y);
+        assertEquals("100: 90 46", result.returnListAsString());
+        assertFalse(result.isNegative);
+
+        // add two large numbers
+        x = new Num("15248695712464651165");
+        y = new Num("125485784");
+        result = Num.add(x, y);
+        assertEquals("100: 49 69 13 90 25 71 95 86 24 15", result.returnListAsString());
+        assertFalse(result.isNegative);
+    }
+
+    @Test
     void testProduct() {
         Num x, y, z;
 
