@@ -215,7 +215,30 @@ public class Num  implements Comparable<Num> {
     }
 
     public static Num subtract(Num a, Num b) {
-        return null;
+        int comparison = a.compareTo(b);
+        Num result;
+        if (comparison == 0) {
+            result = new Num(0);
+        } else if (comparison > 0) {  // a is bigger
+            if (!a.isNegative && b.isNegative) {
+                b.isNegative = false;
+                result = add(a, b);
+            } else if (a.isNegative && b.isNegative) {
+                result = null;
+            } else {  // if we are here, both a and b are positive
+                result = null;
+            }
+        } else {  // b is bigger
+            if (a.isNegative && !b.isNegative) {
+                a.isNegative = false;
+                result = add(a, b);
+            } else if (!a.isNegative && !b.isNegative) {
+                result = null;
+            } else {  // both a and b are negative
+                result = null;
+            }
+        }
+        return result;
     }
 
     //need to work on optimization, currently O(n^2)
@@ -279,6 +302,7 @@ public class Num  implements Comparable<Num> {
         for (int k = 0; k <= newSize; k++) {
             result[k] = arr[k];
         }
+
 
         return result;
     }

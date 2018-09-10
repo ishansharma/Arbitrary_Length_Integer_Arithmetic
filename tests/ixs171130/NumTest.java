@@ -100,6 +100,47 @@ class NumTest {
     }
 
     @Test
+    void testSubtractionWhenNumbersAreEqual() {
+        Num x, y, result;
+
+        // subtract 0 from 0
+        x = new Num(0);
+        y = new Num("0");
+        result = Num.subtract(x, y);
+        assertEquals("100: 0", result.returnListAsString());
+
+        // subtract two equal +ve numbers
+        x = new Num(100);
+        y = new Num("100");
+        result = Num.subtract(x, y);
+        assertEquals("100: 0", result.returnListAsString());
+
+        // subtract two equal -ve numbers
+        x = new Num("-123456789");
+        y = new Num(-123456789);
+        result = Num.subtract(x, y);
+        assertEquals("100: 0", result.returnListAsString());
+    }
+
+    @Test
+    void testSubtractionWhenXIsGreaterThanY() {
+        Num x, y, result;
+
+        // when x is positive and y is negative, with a smaller number
+        x = new Num("5");
+        y = new Num("-3");
+        result = Num.subtract(x, y);
+        assertEquals("100: 8", result.returnListAsString());
+
+        // when x is positive and y is negative, with a large number
+        x = new Num("15248597586485754648891564");
+        y = new Num("-48915198495619845641984");
+        result = Num.add(x, y);  // 15297512784981374494533548
+        assertEquals("100: 48 35 53 94 44 37 81 49 78 12 75 29 15", result.returnListAsString());
+        assertFalse(result.isNegative);
+    }
+
+    @Test
     void testProduct() {
         Num x, y, z;
 
