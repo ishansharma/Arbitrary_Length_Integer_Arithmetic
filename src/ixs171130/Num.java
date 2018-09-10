@@ -33,8 +33,13 @@ public class Num {
             isNegative = false;
         }
 
+        /* Why next two lines are the way they are:
+         *  We need to consider the decimal digits. Initially, I was blindly adding 1 to result of expression inside
+         *  Math.ceil() but when there are even number of digits, we needlessly added an extra slot in the array
+         *  which would have caused issues with operations that need size to function properly e.g. subtraction
+         */
         int size;
-        size = 1 + (s.length() / (((Long) base).toString().length() - 1));
+        size = (int) Math.ceil(((double) s.length() / (((Long) base).toString().length() - 1)));
 
         arr = new long[size];
 
