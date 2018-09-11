@@ -227,6 +227,13 @@ class NumTest {
         assertEquals("-65469849468489479894760242909499675687055856212", result.toString());
         assertTrue(result.isNegative);
 
+        // edge case
+        x = new Num(685050);
+        y = new Num(1234567);
+        result = Num.subtract(x, y);
+        assertEquals("-549517", result.toString());
+        assertTrue(result.isNegative);
+
         // when both are positive, with only 1 digit more in second
         x = new Num("4564984351654321894132165743516546546");
         y = new Num("45649843516543218941321657435165465462");

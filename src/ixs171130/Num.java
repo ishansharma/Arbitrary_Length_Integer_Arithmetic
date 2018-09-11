@@ -7,7 +7,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Num  implements Comparable<Num> {
+public class Num implements Comparable<Num> {
 
     static long defaultBase = 100;  // Change as needed
     long base = defaultBase;  // Change as needed
@@ -143,10 +143,6 @@ public class Num  implements Comparable<Num> {
         len = array.length;
     }
 
-    public void setPositive() {
-        isNegative = false;
-    }
-
 
     public static Num add(Num a, Num b) {
 
@@ -229,29 +225,33 @@ public class Num  implements Comparable<Num> {
      * @return result for a - b
      */
     public static Num subtract(Num a, Num b) {
-        int comparison = a.compareTo(b);
+        // creating new instances because I'm modifying objects
+        // and that modified our original objects
+        Num x = new Num(a.toString());
+        Num y = new Num(b.toString());
+        int comparison = x.compareTo(y);
         Num result;
         if (comparison == 0) {
             result = new Num(0);
         } else if (comparison > 0) {  // a is bigger
-            if (!a.isNegative && b.isNegative) {
-                b.isNegative = false;
-                result = add(a, b);
-            } else if (a.isNegative && b.isNegative) {
-                result = subtractInternal(b, a);
+            if (!x.isNegative && y.isNegative) {
+                y.isNegative = false;
+                result = add(x, y);
+            } else if (x.isNegative && y.isNegative) {
+                result = subtractInternal(y, x);
             } else {  // if we are here, both a and b are positive
-                result = subtractInternal(a, b);
+                result = subtractInternal(x, y);
             }
         } else {  // b is bigger
-            if (a.isNegative && !b.isNegative) {
-                a.isNegative = false;
-                result = add(a, b);
+            if (x.isNegative && !y.isNegative) {
+                x.isNegative = false;
+                result = add(x, y);
                 result.isNegative = true;
-            } else if (!a.isNegative && !b.isNegative) {
-                result = subtractInternal(b, a);
+            } else if (!x.isNegative && !y.isNegative) {
+                result = subtractInternal(y, x);
                 result.isNegative = true;
             } else {  // both a and b are negative
-                result = subtractInternal(a, b);
+                result = subtractInternal(x, y);
                 result.isNegative = true;
             }
         }
