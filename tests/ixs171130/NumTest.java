@@ -248,11 +248,13 @@ class NumTest {
         assertEquals("-4519816518497205647081", result.toString());
 
         // when both are negative, small difference
-        x = new Num("-15");
-        y = new Num(-5);
+        x = new Num("1234567");
+        y = new Num("925925");
         result = Num.subtract(x, y);
-        assertEquals("-10", result.toString());
-        assertTrue(result.isNegative);
+        assertEquals("308642", result.toString());
+        //result.printList();
+        //System.out.println(" len " + result.len);
+        assertFalse(result.isNegative);
     }
 
     @Test
@@ -276,10 +278,10 @@ class NumTest {
         assertEquals("-56088", z.toString());
         assertTrue(z.isNegative);
 
-        x = new Num("123");
+        x = new Num("12");
         y = new Num("-456");
         z = Num.product(x, y);
-        assertEquals("-56088", z.toString());
+        assertEquals("-5472", z.toString());
         assertTrue(z.isNegative);
 
         x = new Num("-123456789101112");
@@ -288,10 +290,10 @@ class NumTest {
         assertEquals("56393167241360975102138882254992", z.toString());
         assertFalse(z.isNegative);
 
-        x = new Num("0");
-        y = new Num("0");
+        x = new Num("4567");
+        y = new Num("1080246");
         z = Num.product(x, y);
-        assertEquals("100: 0", z.returnListAsString());
+        assertEquals("4933483482", z.toString());
     }
 
     @Test
@@ -379,5 +381,53 @@ class NumTest {
         // a large random number
         x = new Num("1123446891891879512198946152197987494");
         assertEquals("1123446891891879512198946152197987494", x.toString());
+    }
+
+    @Test
+    void testBy2() {
+        Num x, y, z;
+
+        x = new Num("1234567891234567891230");
+        assertEquals("617283945617283945615" , x.by2().toString());
+
+        x = new Num(0);
+        assertEquals("0", x.by2().toString());
+
+        x = new Num("-256");
+        assertEquals("-128", x.by2().toString());
+    }
+
+    @Test
+    void testDivide() {
+        Num x, y, z;
+
+        x = new Num("123456789");
+        y = new Num("4567");
+        assertEquals("27032", Num.divide(x, y).toString());
+
+        x = new Num("-123456789");
+        y = new Num("4567");
+        assertEquals("-27032", Num.divide(x, y).toString());
+
+        x = new Num("123456789");
+        y = new Num("-4567");
+        assertEquals("-27032", Num.divide(x, y).toString());
+
+        x = new Num("-123456789");
+        y = new Num("-4567");
+        assertEquals("27032", Num.divide(x, y).toString());
+
+        x = new Num("0");
+        y = new Num("-4567");
+        assertEquals("0", Num.divide(x, y).toString());
+
+        x = new Num("-4567");
+        y = new Num("0");
+        assertEquals("2147483647", Num.divide(x, y).toString());
+
+        x = new Num("0");
+        y = new Num("0");
+        assertEquals("2147483647", Num.divide(x, y).toString());
+
     }
 }

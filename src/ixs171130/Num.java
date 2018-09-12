@@ -208,7 +208,7 @@ public class Num implements Comparable<Num> {
                 add.isNegative = true;
 
             add.arr = removeTrailingZeros(add.arr);
-
+            add.len = add.arr.length;
             return(add);
 
         } else {
@@ -297,6 +297,8 @@ public class Num implements Comparable<Num> {
         }
 
         resultNum = new Num(result);
+        resultNum.arr = removeTrailingZeros(resultNum.arr);
+        resultNum.len = resultNum.arr.length;
         resultNum.isNegative = false;
 
         return resultNum;
@@ -364,7 +366,6 @@ public class Num implements Comparable<Num> {
             result[k] = arr[k];
         }
 
-
         return result;
     }
 
@@ -376,37 +377,72 @@ public class Num implements Comparable<Num> {
     		return new Num(1);
     	}
     	
-    	Num temp; 
-    	
+    	Num temp;
     	temp = power(a,n/2);
-    	
     	if(n%2 == 0)
     		return(product(temp,temp));
     	else
     		return( product(a, product(temp,temp) ) );
-    	
-    	
     }
 
-//    // Use binary search to calculate a/b
-    public static Num divide(Num dividend, Num divisor) {
-//        if (divisor.len == 1 && divisor.arr[0] == 0) {
-//            return Num.MAX_VALUE;
-//        }
-//
-//        if (dividend.len < divisor.len || (dividend.len == divisor.len &&
-//                dividend.arr[dividend.len -1] < divisor.arr[divisor.len - 1])) {
-//            return new Num(0);
-//        }
-//
-//        Num lower = new Num(0);
-//        Num higher = divisor;
-//
-//        while (true) {
-////            Num mid = (subtract())
-//        }
-//
-        return null;
+    // Use binary search to calculate a/b
+    public static Num divide(Num a, Num b) {
+
+        Num dividend = new Num(a.toString());
+        Num divisor = new Num(b.toString());
+        boolean flag = false;
+
+        if (dividend.isNegative ^ divisor.isNegative) {
+            flag = true; // if this number is negative, return -1. Else return 1.
+        }
+        dividend.isNegative = false;
+        divisor.isNegative = false;
+
+        if (divisor.len == 1 && divisor.arr[0] == 0) {
+            return Num.MAX_VALUE;
+        }
+
+        if (dividend.len < divisor.len || (dividend.len == divisor.len &&
+                dividend.arr[dividend.len -1] < divisor.arr[divisor.len - 1])) {
+            return new Num(0);
+        }
+
+        Num lower = new Num(0);
+        Num higher = new Num(dividend.toString());
+
+        Num prevSub = new Num(0);
+
+        while (true) {
+
+            //subtract higher - lower
+
+            Num sub = subtract(higher, lower);
+            if (prevSub.compareTo(sub) == 0) {
+                lower.isNegative = flag;
+                return lower;
+            }
+            prevSub = sub;
+
+            //get mid  = lower + (higher - lower)/2
+            Num mid = add(lower, sub.by2());
+            
+            //Compare ( divisor * mid - dividend, 0)
+            int compareToDM = subtract(product(divisor, mid), dividend).compareTo(new Num(0));
+
+            //if compare returns 0 then mid is quotient
+            if (compareToDM == 0) {
+                mid.isNegative = flag;
+                return mid;
+            }
+            //else if -1 then mid is lower half
+            else if (compareToDM == -1) {
+                lower = mid;
+            }
+            //else mid is in the upper half
+            else {
+                higher = mid;
+            }
+        }
     }
 
     // return a%b
@@ -522,8 +558,42 @@ public class Num implements Comparable<Num> {
 
     public long base() { return base; }
 
+    public static char evaluate(int num, int base) {
+        if (num >= 0 && num <=base) {
+            System.out.println((char)num);
+            return Character.forDigit(num, 10);
+        }
+        else {
+            System.out.println((char)('A' + (num - base)));
+            return (char)('A' + (num - base));
+        }
+    }
+
     // Return number equal to "this" number, in base=newBase
     public Num convertBase(int newBase) {
+
+//        base = newBase;
+//        if (len == 0) {
+//            return new Num(0);
+//        }
+//
+//        char arr2[] = new char[len];
+//        Num result = new Num();
+//        long carry = 0;
+//
+//        //need to test for different bases
+//        for (int  i = len-1; i >= 0; i--) {
+//            System.out.println("1: " + carry * base);
+//            System.out.println("2: " + arr[i]);
+//            System.out.println("3: " + carry * base + arr[i]);
+//            System.out.println("4: " + ((carry * base + arr[i])/newBase));
+//            arr2[i] = evaluate((int)(carry * base + arr[i])/newBase, newBase);
+//            carry = (carry * newBase + arr[i]) % newBase;
+//        }
+//        System.out.println(Arrays.toString(arr2));
+//        //result.arr = arr2;
+//        result.len = arr2.length;
+//        result.isNegative = isNegative;
         return null;
     }
 
@@ -534,18 +604,17 @@ public class Num implements Comparable<Num> {
             return new Num(0);
         }
 
-        System.out.println(" length : " + len);
         long[] arr2 = new long[len];
         Num result = new Num();
         long carry = 0;
+        //printList();
 
-        //need to test for different bases
         for (int  i = len-1; i >= 0; i--) {
             arr2[i] = (carry * base + arr[i])/2;
             carry = arr[i] % 2;
         }
-        result.arr = arr2;
-        result.len = arr2.length;
+        result.arr = removeTrailingZeros(arr2);
+        result.len = result.arr.length;
         result.isNegative = isNegative;
         return result;
     }
@@ -573,17 +642,18 @@ public class Num implements Comparable<Num> {
 //        Num a = Num.power(x, 8);
 //        System.out.println(a);
 //        if(z != null) z.printList();
-        //Num x = new Num(10965);
-        //x.printList();
+//        Num x = new Num(10965);
+//        x.printList();
 
+        Num x = new Num(-1234567);
+        Num y = new Num(-4567);
+        //Num z = product(x, y);
+        Num w = divide(x, y);
+        w.printList();
+        System.out.println(w.toString());
+        System.out.println(" is Negative : " + w.isNegative );
 
-        Num x = new Num(123);
-        Num y = new Num(456);
-
-        Num z = product(x, y);
 //        z.printList();
-//
-//
 //        x = new Num(0);
 //        y = new Num(456);
 //        z = product(x, y);
@@ -607,10 +677,16 @@ public class Num implements Comparable<Num> {
 //        z.printList();
 //        System.out.println(z.isNegative);
 
-        x = new Num(34364374);
-        z = x.by2();
-        z.printList();
-        System.out.println(z.isNegative);
+//        x = new Num(3456);
+//        z = x.by2();
+//        z.printList();
+//        System.out.println(z.isNegative);
+//
+//        z = x.convertBase(16);
+//        z.printList();
+
+        //evaluate(216, 16);
+        //System.out.println(evaluate(10, 10));
 
     }
 }
