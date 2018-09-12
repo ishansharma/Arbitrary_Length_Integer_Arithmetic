@@ -5,7 +5,7 @@ package ixs171130;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
 public class Num implements Comparable<Num> {
 
@@ -571,43 +571,68 @@ public class Num implements Comparable<Num> {
 
     public long base() { return base; }
 
-    public static char evaluate(int num, int base) {
-        if (num >= 0 && num <=base) {
-            System.out.println((char)num);
-            return Character.forDigit(num, 10);
+    public String printNumberByBase() {
+
+        StringBuilder output = new StringBuilder();
+        for (int  i = this.len - 1; i >= 0; i--) {
+            output.append(evaluate(this.arr[i], this.base));
         }
-        else {
-            System.out.println((char)('A' + (num - base)));
-            return (char)('A' + (num - base));
-        }
+        return output.toString();
+    }
+
+    public static char evaluate(long num, long base) {
+//        if (num >= 0 && num <=base) {
+//            System.out.println((char)(num + '0'));
+////            System.out.println((char)num);
+//            return (char)(num + '0');
+//        }
+//        else if (num >= 10 && num <= 36){
+//            System.out.println("data : " + (int)(num-base));
+////            System.out.println((char)('A' + (num - base)));
+//            return (char)('A' + (num - base));
+//        }
+//        else if(num >= 37 && num <= 62) {
+//            System.out.println("data2 : " + (int)(num - base));
+////            System.out.println((char)('a' + (num - base)));
+//            return (char)('a' + (num - base));
+//        }
+//        else{
+//            return (char)(num-base);
+//        }
+        return Character.forDigit((int)num, (int)base);
     }
 
     // Return number equal to "this" number, in base=newBase
     public Num convertBase(int newBase) {
 
-//        base = newBase;
-//        if (len == 0) {
-//            return new Num(0);
-//        }
-//
-//        char arr2[] = new char[len];
-//        Num result = new Num();
-//        long carry = 0;
-//
-//        //need to test for different bases
-//        for (int  i = len-1; i >= 0; i--) {
-//            System.out.println("1: " + carry * base);
-//            System.out.println("2: " + arr[i]);
-//            System.out.println("3: " + carry * base + arr[i]);
-//            System.out.println("4: " + ((carry * base + arr[i])/newBase));
-//            arr2[i] = evaluate((int)(carry * base + arr[i])/newBase, newBase);
-//            carry = (carry * newBase + arr[i]) % newBase;
-//        }
-//        System.out.println(Arrays.toString(arr2));
-//        //result.arr = arr2;
-//        result.len = arr2.length;
-//        result.isNegative = isNegative;
-        return null;
+        Num quotient, remainder;
+        List<Long> result = new ArrayList<Long>() ;
+        Num newBaseNum = new Num(newBase);
+        Num input = new Num(this.toString());
+        input.isNegative = false;
+        while(true) {
+            quotient = divide(input, newBaseNum);
+            remainder = mod(input, newBaseNum);
+            if (quotient == null || remainder == null) {
+                throw new ArithmeticException("Some issues with quotient and remainder");
+            }
+            result.add(Long.parseLong(remainder.toString()));
+            if (quotient.toString().equals("0")) {
+                break;
+            }
+            input = quotient;
+        }
+        Num resultNum = new Num();
+        long finalResult[] = new long[result.size()];
+        int index = 0;
+        for(Long l : result) {
+            finalResult[index++] = l;
+        }
+        resultNum.arr = finalResult;
+        resultNum.len = result.size();
+        resultNum.base = newBase;
+        resultNum.isNegative = this.isNegative;
+        return resultNum;
     }
 
     // Divide by 2, for using in binary search
@@ -658,13 +683,28 @@ public class Num implements Comparable<Num> {
 //        Num x = new Num(10965);
 //        x.printList();
 
-        Num x = new Num(123456789);
-        Num y = new Num(4567);
+        Num x = new Num(1234);
+        Num y = x.convertBase(10);
+        System.out.println(y.printNumberByBase());
+
+        y = y.convertBase(16);
+        System.out.println(y.printNumberByBase());
+
+        y = y.convertBase(10);
+        System.out.println(y.printNumberByBase());
+
+        x = new Num(12365);
+        y = x.convertBase(8);
+        System.out.println(y.printNumberByBase());
+
+        y = y.convertBase(10);
+        System.out.println(y.printNumberByBase());
+        //        y.printList();
         //Num z = product(x, y);
 //        Num w = divide(x, y);
-        Num u = mod(x, y);
-        u.printList();
-        System.out.println(u.toString());
+//        Num u = mod(x, y);
+//        u.printList();
+//        System.out.println(u.toString());
 //        w.printList();
 //        System.out.println(w.toString());
 //        System.out.println(" is Negative : " + w.isNegative );

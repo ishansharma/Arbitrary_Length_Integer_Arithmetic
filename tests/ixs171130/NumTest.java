@@ -455,4 +455,25 @@ class NumTest {
         y = new Num("1234567891");
         assertEquals("781866112", Num.mod(x, y).toString());
     }
+
+    @Test
+    void testConvertBase() {
+
+        Num x = new Num(1234);
+        Num y = x.convertBase(10);
+        assertEquals("1234", y.printNumberByBase());
+
+        y = y.convertBase(16);
+        assertEquals("4d2", y.printNumberByBase());
+
+        y = y.convertBase(10);
+        assertEquals("1234", y.printNumberByBase());
+
+        x = new Num(12365);
+        y = x.convertBase(8);
+        assertEquals("30115", y.printNumberByBase());
+
+        y = y.convertBase(10);
+        assertEquals("12365", y.printNumberByBase());
+    }
 }
