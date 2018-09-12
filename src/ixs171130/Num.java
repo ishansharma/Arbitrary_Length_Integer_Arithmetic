@@ -399,7 +399,7 @@ public class Num implements Comparable<Num> {
         divisor.isNegative = false;
 
         if (divisor.len == 1 && divisor.arr[0] == 0) {
-            return Num.MAX_VALUE;
+            return null;
         }
 
         if (dividend.len < divisor.len || (dividend.len == divisor.len &&
@@ -446,8 +446,21 @@ public class Num implements Comparable<Num> {
     }
 
     // return a%b
-    public static Num mod(Num a, Num b) {
-        return null;
+    //Assumption a and b are non negative and b > 0
+    //mod return remainder else returns null if b = 0
+    public static Num mod(Num a, Num b)
+    {
+        if (a.isNegative || b.isNegative) {
+            throw new ArithmeticException(" Mod function arguments cannot be negative ");
+        }
+        Num quotient = divide(a, b);
+        if ( quotient == null) {
+            return null;
+        }
+        Num product = product(b, quotient);
+        product.isNegative = false;
+        Num remainder =  subtract(a, product);
+        return remainder;
     }
 
     // Use binary search
@@ -645,13 +658,16 @@ public class Num implements Comparable<Num> {
 //        Num x = new Num(10965);
 //        x.printList();
 
-        Num x = new Num(-1234567);
-        Num y = new Num(-4567);
+        Num x = new Num(123456789);
+        Num y = new Num(4567);
         //Num z = product(x, y);
-        Num w = divide(x, y);
-        w.printList();
-        System.out.println(w.toString());
-        System.out.println(" is Negative : " + w.isNegative );
+//        Num w = divide(x, y);
+        Num u = mod(x, y);
+        u.printList();
+        System.out.println(u.toString());
+//        w.printList();
+//        System.out.println(w.toString());
+//        System.out.println(" is Negative : " + w.isNegative );
 
 //        z.printList();
 //        x = new Num(0);

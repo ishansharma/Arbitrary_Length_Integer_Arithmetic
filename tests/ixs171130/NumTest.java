@@ -423,11 +423,36 @@ class NumTest {
 
         x = new Num("-4567");
         y = new Num("0");
-        assertEquals("2147483647", Num.divide(x, y).toString());
+        assertEquals(null, Num.divide(x, y));
 
         x = new Num("0");
         y = new Num("0");
-        assertEquals("2147483647", Num.divide(x, y).toString());
+        assertEquals(null, Num.divide(x, y));
 
+    }
+
+    @Test
+    void testMod() {
+        Num x, y, z;
+
+        x = new Num("123456789");
+        y = new Num("4567");
+        assertEquals("1645", Num.mod(x, y).toString());
+
+        x = new Num("0");
+        y = new Num("4567");
+        assertEquals("0", Num.mod(x, y).toString());
+
+        x = new Num("4567");
+        y = new Num("0");
+        assertEquals(null, Num.mod(x, y));
+
+        x = new Num("123456789123456789123456789123456789123456789");
+        y = new Num("123456789");
+        assertEquals("0", Num.mod(x, y).toString());
+
+        x = new Num("123456789123456789123456789123456789123456789");
+        y = new Num("1234567891");
+        assertEquals("781866112", Num.mod(x, y).toString());
     }
 }
