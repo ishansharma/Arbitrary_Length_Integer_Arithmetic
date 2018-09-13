@@ -10,6 +10,12 @@ class NumTest {
         // testing for a multiple of base
         Num x = new Num("10000");
         assertEquals("100: 0 0 1", x.returnListAsString());
+        assertEquals("10000", x.toString());
+
+        // testing for a small number
+        x = new Num("100");
+        assertEquals("100: 0 1", x.returnListAsString());
+        assertEquals("100", x.toString());
 
         // testing for a (small) non-multiple of the base
         Num y = new Num("567");
