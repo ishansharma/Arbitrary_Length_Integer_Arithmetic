@@ -20,6 +20,7 @@ class NumTest {
         // testing for a (small) non-multiple of the base
         Num y = new Num("567");
         assertEquals("100: 67 5", y.returnListAsString());
+        assertEquals("567", y.toString());
 
         // testing for a (long) non-multiple of the base
         Num z = new Num("45895361142");

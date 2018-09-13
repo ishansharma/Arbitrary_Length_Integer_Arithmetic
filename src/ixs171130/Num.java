@@ -14,7 +14,7 @@ public class Num implements Comparable<Num> {
     long[] arr;  // array to store arbitrarily large integers
     boolean isNegative;  // boolean flag to represent negative numbers
     int len = 0;  // actual number of elements of array that are used;  number is stored in arr[0..len-1]
-    static final Num MAX_VALUE = new Num(2147483647);
+    static final Num MAX_VALUE = new Num(123456);
 
     public Num() {
     }
@@ -67,7 +67,7 @@ public class Num implements Comparable<Num> {
                 String toAdd = s.substring(j, i);
 
                 // initial zeroes are not needed
-                while (toAdd.indexOf("0") == 0) {
+                while ((toAdd.indexOf("0") == 0) && (toAdd.length() > 1)) {
                     toAdd = toAdd.substring(1);
                     // don't remove last zero
                     if (toAdd.length() == 1) {
