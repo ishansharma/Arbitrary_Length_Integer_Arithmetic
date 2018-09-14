@@ -1,15 +1,16 @@
 // Starter code for lp1.
 // Version 1.0 (8:00 PM, Wed, Sep 5).
 
-package ixs171130;
+package rxk171530;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Num implements Comparable<Num> {
 
-    static long defaultBase = 100;  // Change as needed
+    static long defaultBase = 10;  // Change as needed
     long base = defaultBase;  // Change as needed
     long[] arr;  // array to store arbitrarily large integers
     boolean isNegative;  // boolean flag to represent negative numbers
@@ -83,6 +84,8 @@ public class Num implements Comparable<Num> {
     }
 
     public Num(long x) {
+    	
+    	
 
 
     	if(x == 0)
@@ -464,9 +467,61 @@ public class Num implements Comparable<Num> {
     }
 
     // Use binary search
-    public static Num squareRoot(Num a) {
-        return null;
+    public static Num squareRoot(Num a) throws Exception {
+    	
+    	if(a.isNegative == true)
+    		throw new Exception("No Squareroot for Negative Numbers");
+    	
+    	if(a.compareTo(new Num("0")) == 0)
+    		return(new Num("0"));
+    	
+    	Num start = new Num("1");
+    	
+    	//System.out.println(len);
+
+    	System.out.println(Arrays.toString(start.arr));
+    	
+    	Num mid,midsq,sum; 
+    	
+    	Num end = new Num(a.toString());
+    	System.out.println(Arrays.toString(end.arr));
+    	Num ans = new Num("-1");
+    	
+    	int comparision;
+    	
+    	while(start.compareTo(end) <= 0)
+    	{
+    		sum = add(start, end);
+    		System.out.println("sum :" + Arrays.toString(sum.arr));
+    		mid = sum.by2();
+    		System.out.println("mid :" + Arrays.toString(mid.arr));
+    		midsq = product(mid,mid);
+    		System.out.println("midsq :" + Arrays.toString(midsq.arr));
+    		
+    		comparision = midsq.compareTo(a);
+    		
+    		if(comparision == 0)
+    			return(mid);
+    		else if(comparision < 0 )
+    		{
+    			start = add(mid, new Num(1));
+    			System.out.println("midsq :" + Arrays.toString(start.arr));
+    			ans = mid;
+    			System.out.println("midsq :" + Arrays.toString(ans.arr));
+    		}
+    		else
+    		{
+    			end = subtract(mid, new Num(1));
+    			System.out.println("midsq :" + Arrays.toString(end.arr));
+    		}
+    		
+    		
+    		
+    	}
+    	
+        return ans;
     }
+
 
 
     // Utility functions
@@ -672,77 +727,15 @@ public class Num implements Comparable<Num> {
     }
 
 
-    public static void main(String[] args) {
-//        Num x = new Num(999);
-//        Num y = new Num("8");
-//        Num z = Num.add(x, y);
-//        System.out.println(z);
-//        Num a = Num.power(x, 8);
-//        System.out.println(a);
-//        if(z != null) z.printList();
-//        Num x = new Num(10965);
-//        x.printList();
+    public static void main(String[] args) throws Exception {
+        Num x = new Num("");
+        
+        x.printList();
+        
+        Num y = squareRoot(x);
+        y.printList();
 
-        Num x = new Num(1234);
-        Num y = x.convertBase(10);
-        System.out.println(y.printNumberByBase());
 
-        y = y.convertBase(16);
-        System.out.println(y.printNumberByBase());
-
-        y = y.convertBase(10);
-        System.out.println(y.printNumberByBase());
-
-        x = new Num(12365);
-        y = x.convertBase(8);
-        System.out.println(y.printNumberByBase());
-
-        y = y.convertBase(10);
-        System.out.println(y.printNumberByBase());
-        //        y.printList();
-        //Num z = product(x, y);
-//        Num w = divide(x, y);
-//        Num u = mod(x, y);
-//        u.printList();
-//        System.out.println(u.toString());
-//        w.printList();
-//        System.out.println(w.toString());
-//        System.out.println(" is Negative : " + w.isNegative );
-
-//        z.printList();
-//        x = new Num(0);
-//        y = new Num(456);
-//        z = product(x, y);
-//        z.printList();
-//
-//        x = new Num(-123);
-//        y = new Num(456);
-//        z = product(x, y);
-//        z.printList();
-//        System.out.println(z.isNegative);
-//
-//        x = new Num(-1234567888);
-//        y = new Num(-456676878);
-//        z = product(x, y);
-//        z.printList();
-//        System.out.println(z.isNegative);
-//
-//        x = new Num(0);
-//        y = new Num(0);
-//        z = product(x, y);
-//        z.printList();
-//        System.out.println(z.isNegative);
-
-//        x = new Num(3456);
-//        z = x.by2();
-//        z.printList();
-//        System.out.println(z.isNegative);
-//
-//        z = x.convertBase(16);
-//        z.printList();
-
-        //evaluate(216, 16);
-        //System.out.println(evaluate(10, 10));
 
     }
 }
