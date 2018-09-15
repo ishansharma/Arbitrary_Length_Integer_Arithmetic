@@ -479,12 +479,12 @@ public class Num implements Comparable<Num> {
     	
     	//System.out.println(len);
 
-    	System.out.println(Arrays.toString(start.arr));
+    	//System.out.println(Arrays.toString(start.arr));
     	
     	Num mid,midsq,sum; 
     	
     	Num end = new Num(a.toString());
-    	System.out.println(Arrays.toString(end.arr));
+    	//System.out.println(Arrays.toString(end.arr));
     	Num ans = new Num("-1");
     	
     	int comparision;
@@ -492,11 +492,11 @@ public class Num implements Comparable<Num> {
     	while(start.compareTo(end) <= 0)
     	{
     		sum = add(start, end);
-    		System.out.println("sum :" + Arrays.toString(sum.arr));
+    		//System.out.println("sum :" + Arrays.toString(sum.arr));
     		mid = sum.by2();
-    		System.out.println("mid :" + Arrays.toString(mid.arr));
+    		//System.out.println("mid :" + Arrays.toString(mid.arr));
     		midsq = product(mid,mid);
-    		System.out.println("midsq :" + Arrays.toString(midsq.arr));
+    		//System.out.println("midsq :" + Arrays.toString(midsq.arr));
     		
     		comparision = midsq.compareTo(a);
     		
@@ -505,14 +505,14 @@ public class Num implements Comparable<Num> {
     		else if(comparision < 0 )
     		{
     			start = add(mid, new Num(1));
-    			System.out.println("midsq :" + Arrays.toString(start.arr));
+    			//System.out.println("midsq :" + Arrays.toString(start.arr));
     			ans = mid;
-    			System.out.println("midsq :" + Arrays.toString(ans.arr));
+    			//System.out.println("midsq :" + Arrays.toString(ans.arr));
     		}
     		else
     		{
     			end = subtract(mid, new Num(1));
-    			System.out.println("midsq :" + Arrays.toString(end.arr));
+    			//System.out.println("midsq :" + Arrays.toString(end.arr));
     		}
     		
     		
@@ -716,7 +716,53 @@ public class Num implements Comparable<Num> {
     // Each string is one of: "*", "+", "-", "/", "%", "^", "0", or
     // a number: [1-9][0-9]*.  There is no unary minus operator.
     public static Num evaluatePostfix(String[] expr) {
-        return null;
+    	
+    	Stack<Num> stack = new Stack<>();
+    	
+    	String c; 
+    	
+    	System.out.println(expr.length);
+    	
+    	String regex = "\\d+";
+    	Num val1,val2;
+    	
+    	for(int i= 0 ; i< expr.length ; i++)
+    	{
+    		c = expr[i];
+    		//System.out.println(c);
+    		
+    		if(c.matches(regex))
+    		{
+    			stack.push(new Num(c));
+    		}
+    		else
+    		{
+    			val1 = stack.pop();
+    			val2 = stack.pop();
+    			
+    			switch(c)
+    			{
+    				case "+":
+    					stack.push(add(val2,val1));
+    					break;
+    				case "-":
+    					stack.push(subtract(val2, val1));
+    					break;
+    				case "/":
+    					stack.push(divide(val2, val1));
+    				case "*":
+    					stack.push(product(val2, val1));
+    					break;
+    				case "^":
+    					stack.push( power(val2, Long.parseLong(val1.toString())  ) );
+    					break;
+    			}
+    		}
+    		
+    	}
+    	
+    	
+        return stack.pop();
     }
 
     // Evaluate an expression in infix and return resulting number
@@ -728,12 +774,14 @@ public class Num implements Comparable<Num> {
 
 
     public static void main(String[] args) throws Exception {
-        Num x = new Num("");
+        String[] arr2 = {"1","3","^","9","+","9","-"};
         
-        x.printList();
         
-        Num y = squareRoot(x);
-        y.printList();
+        
+        Num r = evaluatePostfix(arr2);
+        
+        System.out.println(r.toString());
+        
 
 
 
