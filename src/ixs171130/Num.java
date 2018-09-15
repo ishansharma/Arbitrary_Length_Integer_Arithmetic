@@ -1,7 +1,7 @@
 // Starter code for lp1.
 // Version 1.0 (8:00 PM, Wed, Sep 5).
 
-package rxk171530;
+package ixs171130;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import java.util.List;
 
 public class Num implements Comparable<Num> {
 
-    static long defaultBase = 10;  // Change as needed
+    static long defaultBase = 100;  // Change as needed
     long base = defaultBase;  // Change as needed
     long[] arr;  // array to store arbitrarily large integers
     boolean isNegative;  // boolean flag to represent negative numbers
