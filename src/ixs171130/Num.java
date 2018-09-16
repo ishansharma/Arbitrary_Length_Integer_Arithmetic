@@ -21,7 +21,7 @@ public class Num implements Comparable<Num> {
     /**
      * Accepts a string, breaks it in to smaller elements (based on base) and store into arr
      *
-     * @params Input string
+     * @param s Input string
      */
     public Num(String s) {
         if (s.indexOf("-") == 0) {
@@ -86,7 +86,7 @@ public class Num implements Comparable<Num> {
     	{
     		len = 1;
     		arr = new long[len];
-    		arr[0] = 0l;
+            arr[0] = 0L;
     	}
     	else
     	{
@@ -133,7 +133,7 @@ public class Num implements Comparable<Num> {
     /**
      * Initialize from an array
      *
-     * @param array
+     * @param array Array to initialize from
      */
     public Num(long[] array) {
         arr = array;
@@ -196,7 +196,7 @@ public class Num implements Comparable<Num> {
             if(carry > 0 )
                 add.arr[counter] = carry;
             else
-                add.arr[counter] = 0l;
+                add.arr[counter] = 0L;
 
 
             add.len = counter;
@@ -359,37 +359,7 @@ public class Num implements Comparable<Num> {
 
         long[] result;
         result = new long[newSize + 1];
-        for (int k = 0; k <= newSize; k++) {
-            result[k] = arr[k];
-        }
-
-        return result;
-    }
-
-    /**
-     * Remove Null elements from the array end and return a new array
-     *
-     * @param arr Array of string, potentially with some null elements at the end
-     * @return A new array which is copy of current array, without any null elements
-     */
-    private static String[] removeTrailingNulls(String[] arr) {
-        int size = arr.length;
-        int newSize = size - 1;
-
-        while (arr[newSize].equals(null) && newSize > 0) {
-            newSize--;
-        }
-
-        // if no nulls to remove
-        if (newSize == size - 1) {
-            return arr;
-        }
-
-        String[] result = new String[newSize + 1];
-
-        for (int k = 0; k <= newSize; k++) {
-            result[k] = arr[k];
-        }
+        System.arraycopy(arr, 0, result, 0, newSize + 1);
 
         return result;
     }
