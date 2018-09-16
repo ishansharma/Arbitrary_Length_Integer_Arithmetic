@@ -494,13 +494,26 @@ class NumTest {
 
         String[] expression2 = {"3", "+", "4", "*", "2", "/", "(", "1", "-", "5", ")", "^", "2", "^", "3"};
         // extra nulls because otherwise Arrays.equals fails!
-        String[] expected2 = {"3", "4", "2", "*", "1", "5", "-", "2", "3", "^", "^", "/", "+", null, null};
+        String[] expected2 = {"3", "4", "2", "*", "1", "5", "-", "2", "3", "^", "^", "/", "+"};
         String[] result2 = Num.convertInfixToPostfix(expression2);
         assertTrue(Arrays.equals(expected2, result2));
 
         String[] expression3 = {"(", "(", "3", "+", "5", ")", "-", "(", "4", "+", "5", ")", ")", "^", "2"};
-        String[] expected3 = {"3", "5", "+", "4", "5", "+", "-", "2", "^", null, null, null, null, null, null};
+        String[] expected3 = {"3", "5", "+", "4", "5", "+", "-", "2", "^"};
         String[] result3 = Num.convertInfixToPostfix(expression3);
         assertTrue(Arrays.equals(expected3, result3));
+    }
+
+    @Test
+    void testInfixEvaluation() {
+        String[] expression1 = {"0", "+", "0"};
+        Num expected = new Num("0");
+        Num result = Num.evaluateInfix(expression1);
+        assertEquals(0, expected.compareTo(result));
+
+        String[] expression2 = {"(", "(", "1", "+", "2", ")", "-", "3", ")", "-", "(", "4", "-", "5", ")"};
+        Num expected2 = new Num(1);
+        Num result2 = Num.evaluateInfix(expression2);
+        assertEquals(0, result2.compareTo(expected2));
     }
 }

@@ -740,17 +740,15 @@ public class Num implements Comparable<Num> {
     public static Num evaluatePostfix(String[] expr) {
     	
     	Stack<Num> stack = new Stack<>();
-    	
-    	String c; 
+
     	
     	System.out.println(expr.length);
     	
     	String regex = "\\d+";
     	Num val1,val2;
-    	
-    	for(int i= 0 ; i< expr.length ; i++)
+
+        for (String c : expr)
     	{
-    		c = expr[i];
     		//System.out.println(c);
     		
     		if(c.matches(regex))
@@ -791,7 +789,7 @@ public class Num implements Comparable<Num> {
     // Each string is one of: "*", "+", "-", "/", "%", "^", "(", ")", "0", or
     // a number: [1-9][0-9]*.  There is no unary minus operator.
     public static Num evaluateInfix(String[] expr) {
-        return null;
+        return evaluatePostfix(convertInfixToPostfix(expr));
     }
 
     /**
@@ -805,25 +803,22 @@ public class Num implements Comparable<Num> {
             throw new ArithmeticException("Empty expression given for evaluation.");
         }
 
-        String[] result = new String[expr.length];
+        List<String> result = new ArrayList<>();
         Deque<String> stack = new ArrayDeque<>();
         stack.push("~"); // dummy operation to determine that we've reached bottom of the stack
-        int resultLength = 0;  // because array doesn't have a put function
 
         try {
             for (String op : expr) {
                 // if token is number, add it to output queue
                 if (MathOperations.determineStringType(op).equals(MathOperations.type.NUMBER)) {
-                    result[resultLength] = op;
-                    resultLength++;
+                    result.add(op);
                 } else if (MathOperations.determineStringType(op).equals(MathOperations.type.OPERATOR)) {
                     if (!stack.peek().equals("~")) {
                         while ((MathOperations.getPrecedence(op) < MathOperations.getPrecedence(stack.peek())
                                 || (MathOperations.getPrecedence(op).equals(MathOperations.getPrecedence(stack.peek())) && !op.equals("^")))
                                 && (!MathOperations.determineStringType(op).equals(MathOperations.type.LEFTBRACKET))
                         ) {
-                            result[resultLength] = stack.pop();
-                            resultLength++;
+                            result.add(stack.pop());
 
                             if (stack.peek().equals("~")) {
                                 break;
@@ -835,8 +830,7 @@ public class Num implements Comparable<Num> {
                     stack.push(op);
                 } else if (MathOperations.determineStringType(op).equals(MathOperations.type.RIGHTBRACKET)) {
                     while (!stack.peek().equals("(")) {
-                        result[resultLength] = stack.pop();
-                        resultLength++;
+                        result.add(stack.pop());
                     }
                     stack.pop();
                 }
@@ -846,8 +840,7 @@ public class Num implements Comparable<Num> {
             // if there are more tokens to be read
             if (stack.size() != 1) {
                 while (!stack.peek().equals("~")) {
-                    result[resultLength] = stack.pop();
-                    resultLength++;
+                    result.add(stack.pop());
                 }
             }
         } catch (NullPointerException e) {
@@ -856,7 +849,8 @@ public class Num implements Comparable<Num> {
             System.exit(0);
         }
 
-        return result;
+        String[] res = new String[result.size()];  // directly using toArray gives Object[], we want String[]
+        return result.toArray(res);
     }
 
     private static class MathOperations {
