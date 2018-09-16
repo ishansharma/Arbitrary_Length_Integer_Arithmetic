@@ -4,9 +4,7 @@
 package ixs171130;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class Num implements Comparable<Num> {
 
@@ -84,11 +82,7 @@ public class Num implements Comparable<Num> {
     }
 
     public Num(long x) {
-    	
-    	
-
-
-    	if(x == 0)
+        if (x == 0)
     	{
     		len = 1;
     		arr = new long[len];
@@ -365,6 +359,34 @@ public class Num implements Comparable<Num> {
 
         long[] result;
         result = new long[newSize + 1];
+        for (int k = 0; k <= newSize; k++) {
+            result[k] = arr[k];
+        }
+
+        return result;
+    }
+
+    /**
+     * Remove Null elements from the array end and return a new array
+     *
+     * @param arr Array of string, potentially with some null elements at the end
+     * @return A new array which is copy of current array, without any null elements
+     */
+    private static String[] removeTrailingNulls(String[] arr) {
+        int size = arr.length;
+        int newSize = size - 1;
+
+        while (arr[newSize].equals(null) && newSize > 0) {
+            newSize--;
+        }
+
+        // if no nulls to remove
+        if (newSize == size - 1) {
+            return arr;
+        }
+
+        String[] result = new String[newSize + 1];
+
         for (int k = 0; k <= newSize; k++) {
             result[k] = arr[k];
         }
@@ -726,6 +748,120 @@ public class Num implements Comparable<Num> {
         return null;
     }
 
+    /**
+     * Accept InFix expression and convert to PostFix.
+     *
+     * @param expr Expression in infix notation
+     * @return Converted expression
+     */
+    public static String[] convertInfixToPostfix(String[] expr) {
+        if (expr.length < 1) {
+            throw new ArithmeticException("Empty expression given for evaluation.");
+        }
+
+        String[] result = new String[expr.length];
+        Deque<String> stack = new ArrayDeque<>();
+        stack.push("~"); // dummy operation to determine that we've reached bottom of the stack
+        int resultLength = 0;  // because array doesn't have a put function
+
+        try {
+            for (String op : expr) {
+                // if token is number, add it to output queue
+                if (MathOperations.determineStringType(op).equals(MathOperations.type.NUMBER)) {
+                    result[resultLength] = op;
+                    resultLength++;
+                } else if (MathOperations.determineStringType(op).equals(MathOperations.type.OPERATOR)) {
+                    if (!stack.peek().equals("~")) {
+                        while ((MathOperations.getPrecedence(op) < MathOperations.getPrecedence(stack.peek())
+                                || (MathOperations.getPrecedence(op).equals(MathOperations.getPrecedence(stack.peek())) && !op.equals("^")))
+                                && (!MathOperations.determineStringType(op).equals(MathOperations.type.LEFTBRACKET))
+                        ) {
+                            result[resultLength] = stack.pop();
+                            resultLength++;
+
+                            if (stack.peek().equals("~")) {
+                                break;
+                            }
+                        }
+                    }
+                    stack.push(op);
+                } else if (MathOperations.determineStringType(op).equals(MathOperations.type.LEFTBRACKET)) {
+                    stack.push(op);
+                } else if (MathOperations.determineStringType(op).equals(MathOperations.type.RIGHTBRACKET)) {
+                    while (!stack.peek().equals("(")) {
+                        result[resultLength] = stack.pop();
+                        resultLength++;
+                    }
+                    stack.pop();
+                }
+            }
+
+
+            // if there are more tokens to be read
+            if (stack.size() != 1) {
+                while (!stack.peek().equals("~")) {
+                    result[resultLength] = stack.pop();
+                    resultLength++;
+                }
+            }
+        } catch (NullPointerException e) {
+            System.out.println("Invalid expression:, unclosed parenthesis left after end of expression.");
+            e.printStackTrace();
+            System.exit(0);
+        }
+
+        return result;
+    }
+
+    private static class MathOperations {
+        private enum type {
+            OPERATOR, LEFTBRACKET, RIGHTBRACKET, NUMBER
+        }
+
+        /**
+         * Decide whether given string is an operator/bracket/number
+         *
+         * @param str Input string, either one of "*, +, -, /, %, ^, (, )" or a number
+         * @return a string containing type of the input string
+         */
+        static type determineStringType(String str) {
+            String[] operators = {"*", "+", "-", "/", "%", "^"};
+
+            if (Arrays.asList(operators).contains(str)) {
+                return type.OPERATOR;
+            }
+
+            if (str.equals("(")) {
+                return type.LEFTBRACKET;
+            }
+
+            if (str.equals(")")) {
+                return type.RIGHTBRACKET;
+            }
+
+            return type.NUMBER;
+        }
+
+        /**
+         * @param str Input symbol
+         * @return An integer value for precedence
+         */
+        static Integer getPrecedence(String str) {
+            switch (str) {
+                case "+":
+                case "-":
+                    return 2;
+                case "*":
+                case "/":
+                case "%":
+                    return 3;
+                case "^":
+                    return 4;
+                default:
+                    return 0;
+            }
+        }
+    }
 
     public static void main(String[] args) throws Exception {
         Num x = new Num("");
