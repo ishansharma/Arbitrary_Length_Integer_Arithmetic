@@ -2,6 +2,8 @@ package ixs171130;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class NumTest {
@@ -465,7 +467,6 @@ class NumTest {
 
     @Test
     void testConvertBase() {
-
         Num x = new Num(1234);
         Num y = x.convertBase(10);
         assertEquals("1234", y.printNumberByBase());
@@ -482,5 +483,24 @@ class NumTest {
 
         y = y.convertBase(10);
         assertEquals("12365", y.printNumberByBase());
+    }
+
+    @Test
+    void testInfixToPostfixConversion() {
+        String[] expression = {"3", "+", "4"};
+        String[] expected = {"3", "4", "+"};
+        String[] result = Num.convertInfixToPostfix(expression);
+        assertTrue(Arrays.equals(expected, result));
+
+        String[] expression2 = {"3", "+", "4", "*", "2", "/", "(", "1", "-", "5", ")", "^", "2", "^", "3"};
+        // extra nulls because otherwise Arrays.equals fails!
+        String[] expected2 = {"3", "4", "2", "*", "1", "5", "-", "2", "3", "^", "^", "/", "+", null, null};
+        String[] result2 = Num.convertInfixToPostfix(expression2);
+        assertTrue(Arrays.equals(expected2, result2));
+
+        String[] expression3 = {"(", "(", "3", "+", "5", ")", "-", "(", "4", "+", "5", ")", ")", "^", "2"};
+        String[] expected3 = {"3", "5", "+", "4", "5", "+", "-", "2", "^", null, null, null, null, null, null};
+        String[] result3 = Num.convertInfixToPostfix(expression3);
+        assertTrue(Arrays.equals(expected3, result3));
     }
 }
