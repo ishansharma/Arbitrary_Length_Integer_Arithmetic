@@ -483,6 +483,9 @@ class NumTest {
 
         y = y.convertBase(10);
         assertEquals("12365", y.printNumberByBase());
+
+        x = new Num(-10);
+        assertEquals("-10", x.printNumberByBase());
     }
 
     @Test
