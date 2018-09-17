@@ -619,34 +619,14 @@ public class Num implements Comparable<Num> {
     public long base() { return base; }
 
     public String printNumberByBase() {
-
         StringBuilder output = new StringBuilder();
+        if (isNegative) {
+            output.append("-");
+        }
         for (int  i = this.len - 1; i >= 0; i--) {
-            output.append(evaluate(this.arr[i], this.base));
+            output.append(Long.toString(arr[i]));
         }
         return output.toString();
-    }
-
-    public static char evaluate(long num, long base) {
-//        if (num >= 0 && num <=base) {
-//            System.out.println((char)(num + '0'));
-////            System.out.println((char)num);
-//            return (char)(num + '0');
-//        }
-//        else if (num >= 10 && num <= 36){
-//            System.out.println("data : " + (int)(num-base));
-////            System.out.println((char)('A' + (num - base)));
-//            return (char)('A' + (num - base));
-//        }
-//        else if(num >= 37 && num <= 62) {
-//            System.out.println("data2 : " + (int)(num - base));
-////            System.out.println((char)('a' + (num - base)));
-//            return (char)('a' + (num - base));
-//        }
-//        else{
-//            return (char)(num-base);
-//        }
-        return Character.forDigit((int)num, (int)base);
     }
 
     // Return number equal to "this" number, in base=newBase
