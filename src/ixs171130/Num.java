@@ -142,6 +142,7 @@ public class Num implements Comparable<Num> {
 
 
     public static Num add(Num a, Num b) {
+        Num result;
 
         if (a.base != b.base) {
             throw new ArithmeticException("Bases of two number for addition has to be same");
@@ -209,7 +210,16 @@ public class Num implements Comparable<Num> {
             return(add);
 
         } else {
-            return(subtract(a,b));
+            if (a.compareTo(b) > 0) {
+                b.isNegative = false;
+                result = subtract(a, b);
+                b.isNegative = true;
+            } else {
+                a.isNegative = false;
+                result = subtract(a, b);
+                a.isNegative = true;
+            }
+            return result;
         }
 
 
@@ -635,7 +645,7 @@ public class Num implements Comparable<Num> {
         Num quotient, remainder;
         List<Long> result = new ArrayList<Long>() ;
         Num newBaseNum = new Num(newBase);
-        Num input = new Num(this.toString());
+        Num input = new Num(this.arr);
         input.isNegative = false;
         while(true) {
             quotient = divide(input, newBaseNum);
