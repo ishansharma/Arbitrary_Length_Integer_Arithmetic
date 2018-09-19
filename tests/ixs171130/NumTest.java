@@ -96,7 +96,7 @@ class NumTest {
         x = new Num(0);
         y = new Num(0);
         result = Num.add(x, y);
-        assertEquals("100: 0", result.returnListAsString());
+        assertEquals("0", result.toString());
         assertFalse(result.isNegative);
 
         // add two small numbers
@@ -150,19 +150,19 @@ class NumTest {
         x = new Num(0);
         y = new Num("0");
         result = Num.subtract(x, y);
-        assertEquals("100: 0", result.returnListAsString());
+        assertEquals("0", result.toString());
 
         // subtract two equal +ve numbers
         x = new Num(100);
         y = new Num("100");
         result = Num.subtract(x, y);
-        assertEquals("100: 0", result.returnListAsString());
+        assertEquals("0", result.toString());
 
         // subtract two equal -ve numbers
         x = new Num("-123456789");
         y = new Num(-123456789);
         result = Num.subtract(x, y);
-        assertEquals("100: 0", result.returnListAsString());
+        assertEquals("100: 0", result.toString());
     }
 
     @Test
@@ -180,7 +180,7 @@ class NumTest {
         x = new Num("5");
         y = new Num("-3");
         result = Num.subtract(x, y);
-        assertEquals("100: 8", result.returnListAsString());
+        assertEquals("8", result.toString());
 
         // when x is positive and y is negative, with a large number
         x = new Num("15248597586485754648891564");
@@ -344,7 +344,7 @@ class NumTest {
         x = new Num("0");
         y = new Num("456");
         z = Num.product(x, y);
-        assertEquals("100: 0", z.returnListAsString());
+        assertEquals("0", z.toString());
 
         x = new Num("-123");
         y = new Num("456");
