@@ -162,7 +162,7 @@ class NumTest {
         x = new Num("-123456789");
         y = new Num(-123456789);
         result = Num.subtract(x, y);
-        assertEquals("100: 0", result.toString());
+        assertEquals("0", result.toString());
     }
 
     @Test
