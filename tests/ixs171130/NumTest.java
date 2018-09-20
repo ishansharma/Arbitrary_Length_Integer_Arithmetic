@@ -694,14 +694,40 @@ class NumTest {
 
     @Test
     void testInfixEvaluation() {
+        String expectedString;
         String[] expression1 = {"0", "+", "0"};
         Num expected = new Num("0");
         Num result = Num.evaluateInfix(expression1);
         assertEquals(0, expected.compareTo(result));
 
         String[] expression2 = {"(", "(", "1", "+", "2", ")", "-", "3", ")", "-", "(", "4", "-", "5", ")"};
-        Num expected2 = new Num(1);
-        Num result2 = Num.evaluateInfix(expression2);
-        assertEquals(0, result2.compareTo(expected2));
+        expected = new Num(1);
+        result = Num.evaluateInfix(expression2);
+        assertEquals(0, result.compareTo(expected));
+
+        String[] expression3 = {"2985984", "*", "1336336"};
+        expected = new Num("3990277914624");
+        result = Num.evaluateInfix(expression3);
+        assertEquals(0, result.compareTo(expected));
+
+        String[] expression4 = {"(", "(", "4568", "+", "7937", ")", "*", "(", "543", "+", "787", ")", ")", "^", "2"};
+        expectedString = "276611781722500";
+        result = Num.evaluateInfix(expression4);
+        assertEquals(expectedString, result.toString());
+
+        String[] expression5 = {"(", "(", "(", "(", "4568", "+", "7937", ")", "*", "(", "543", "+", "787", ")", ")", "^", "2", ")", "+", "(", "45", "^", "100", ")", ")"};
+        expectedString = "2095324917039863304313251555826661356467173660585553096278749223514308239748113453774362345525549271530430449123445790860832162183502447305727400816977300690150863125";
+        result = Num.evaluateInfix(expression5);
+        assertEquals(expectedString, result.toString());
+
+        String[] expression6 = {"(", "(", "(", "(", "4568", "+", "7937", ")", "*", "(", "543", "+", "787", ")", ")", "^", "2", ")", "*", "(", "45", "^", "100", ")", ")"};
+        expectedString = "579591558589946089163934732124557974181023604338392314604791407230056195168788357056599510887136359643494310909402228558657891420610697944676426018872916756663471460342407226562500";
+        result = Num.evaluateInfix(expression6);
+        assertEquals(expectedString, result.toString());
+
+        String[] expression7 = {"59", "^", "189"};
+        expectedString = "49094201453858898563821909815715622898343840788307951790829058306066965277556690405198923330469181360047995792298590858320216851893709568850014603801957662304461999764512417471232096405932793406544518843353616811565660050247958484009364202138555194392211155816447162261055429393099785346263362040737435671744070513242674679684447717739";
+        result = Num.evaluateInfix(expression7);
+        assertEquals(expectedString, result.toString());
     }
 }
