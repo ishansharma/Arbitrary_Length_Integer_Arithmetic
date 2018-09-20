@@ -182,6 +182,16 @@ class NumTest {
         result = Num.subtract(x, y);
         assertEquals("8", result.toString());
 
+        x = new Num("100000000000");
+        y = new Num(9);
+        result = Num.subtract(x, y);
+        assertEquals("99999999991", result.toString());
+
+        x = new Num("100000000000");
+        y = new Num(1);
+        result = Num.subtract(x, y);
+        assertEquals("99999999999", result.toString());
+
         // when x is positive and y is negative, with a large number
         x = new Num("15248597586485754648891564");
         y = new Num("-48915198495619845641984");
