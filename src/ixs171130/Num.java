@@ -232,33 +232,31 @@ public class Num implements Comparable<Num> {
      * @return result for a - b
      */
     public static Num subtract(Num a, Num b) {
-        // creating new instances because I'm modifying objects
-        // and that modified our original objects
-        Num x = new Num(a.toString());
-        Num y = new Num(b.toString());
-        int comparison = x.compareTo(y);
+        int comparison = a.compareTo(b);
         Num result;
         if (comparison == 0) {
             result = new Num(0);
         } else if (comparison > 0) {  // a is bigger
-            if (!x.isNegative && y.isNegative) {
-                y.isNegative = false;
-                result = add(x, y);
-            } else if (x.isNegative && y.isNegative) {
-                result = subtractInternal(y, x);
+            if (!a.isNegative && b.isNegative) {
+                b.isNegative = false;
+                result = add(a, b);
+                b.isNegative = true;
+            } else if (a.isNegative && b.isNegative) {
+                result = subtractInternal(b, a);
             } else {  // if we are here, both a and b are positive
-                result = subtractInternal(x, y);
+                result = subtractInternal(a, b);
             }
         } else {  // b is bigger
-            if (x.isNegative && !y.isNegative) {
-                x.isNegative = false;
-                result = add(x, y);
+            if (a.isNegative && !b.isNegative) {
+                a.isNegative = false;
+                result = add(a, b);
+                a.isNegative = true;
                 result.isNegative = true;
-            } else if (!x.isNegative && !y.isNegative) {
-                result = subtractInternal(y, x);
+            } else if (!a.isNegative && !b.isNegative) {
+                result = subtractInternal(b, a);
                 result.isNegative = true;
             } else {  // both a and b are negative
-                result = subtractInternal(x, y);
+                result = subtractInternal(a, b);
                 result.isNegative = true;
             }
         }
@@ -276,15 +274,30 @@ public class Num implements Comparable<Num> {
         int i = 0;
         long[] result = new long[(a.len > b.len) ? a.len : b.len];
         Num resultNum;
+        boolean carry = false;
 
         // subtract till both arrays have numbers
         while (i < a.len && i < b.len) {
-            if (a.arr[i] >= b.arr[i]) {  // if number in a is bigger, we just subtract and save that to result
-                result[i] = a.arr[i] - b.arr[i];
+            if (a.arr[i] > b.arr[i]) {  // if number in a is bigger, we just subtract and save that to result
+                if (carry) {
+                    result[i] = (a.arr[i] - 1) - b.arr[i];
+                    carry = false;
+                } else {
+                    result[i] = a.arr[i] - b.arr[i];
+                }
+            } else if (a.arr[i] == b.arr[i]) {
+                if (carry) {
+                    result[i] = (a.arr[i] - 1 + a.base) - b.arr[i];
+                } else {
+                    result[i] = a.arr[i] - b.arr[i];
+                }
             } else { // if number in b is bigger, we take a carry and then subtract
-                a.arr[i] += a.base;
-                a.arr[i + 1]--;  // carry is taken from next digit of a
-                result[i] = a.arr[i] - b.arr[i];
+                if (carry) {
+                    result[i] = (a.arr[i] - 1 + a.base) - b.arr[i];
+                } else {
+                    result[i] = (a.arr[i] + a.base) - b.arr[i];
+                }
+                carry = true;
             }
 
             i++;
@@ -299,7 +312,12 @@ public class Num implements Comparable<Num> {
         }
 
         while (i < copySource.length) {
-            result[i] = copySource[i];
+            if (carry) {
+                result[i] = copySource[i] - 1;
+                carry = false;
+            } else {
+                result[i] = copySource[i];
+            }
             i++;
         }
 
