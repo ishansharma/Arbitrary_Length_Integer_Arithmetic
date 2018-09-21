@@ -3,7 +3,6 @@
 
 package ixs171130;
 
-import java.math.BigInteger;
 import java.util.*;
 
 public class Num implements Comparable<Num> {
@@ -13,7 +12,6 @@ public class Num implements Comparable<Num> {
     long[] arr;  // array to store arbitrarily large integers
     boolean isNegative;  // boolean flag to represent negative numbers
     int len = 0;  // actual number of elements of array that are used;  number is stored in arr[0..len-1]
-    static final Num MAX_VALUE = new Num(123456);
 
     public Num() {
     }
@@ -54,7 +52,6 @@ public class Num implements Comparable<Num> {
 
         int  j= 0;
         for(int i = s.length() -1; i>= 0; i--) {
-            String data = s.substring(i, i+1);
             arr[j++] = Long.parseLong(s.substring(i, i+1));
         }
 
@@ -336,7 +333,7 @@ public class Num implements Comparable<Num> {
                 } else {
                     result[i] = a.arr[i] - b.arr[i];
                 }
-            } else if (a.arr[i] == b.arr[i]) {
+            } else if (a.arr[i] == b.arr[i]) { // if numbers are equal, check for carry. May need to handle that case
                 if (carry) {
                     result[i] = (a.arr[i] - 1 + a.base) - b.arr[i];
                 } else {
@@ -366,6 +363,10 @@ public class Num implements Comparable<Num> {
             if (carry) {
                 result[i] = copySource[i] - 1;
                 carry = false;
+                if (result[i] < 0) {
+                    result[i] += a.base;
+                    carry = true;
+                }
             } else {
                 result[i] = copySource[i];
             }

@@ -19,6 +19,11 @@ class NumTest {
         assertEquals("100: 0 1", x.returnListAsString());
         assertEquals("100", x.toString());
 
+        // testing with more zeroes
+        x = new Num("100000000000");
+        assertEquals("100: 0 0 0 0 0 10", x.returnListAsString());
+        assertEquals("100000000000", x.toString());
+
         // testing for a (small) non-multiple of the base
         Num y = new Num("567");
         assertEquals("100: 67 5", y.returnListAsString());
