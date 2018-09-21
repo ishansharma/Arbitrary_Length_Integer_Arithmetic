@@ -319,56 +319,33 @@ public class Num implements Comparable<Num> {
      * @return result for a - b
      */
     private static Num subtractInternal(Num a, Num b) {
-        int i = 0;
         long[] result = new long[(a.len > b.len) ? a.len : b.len];
+        int borrow = 0;
         Num resultNum;
-        boolean carry = false;
 
+        int i = 0;  // index for arrays
         // subtract till both arrays have numbers
         while (i < a.len && i < b.len) {
-            if (a.arr[i] > b.arr[i]) {  // if number in a is bigger, we just subtract and save that to result
-                if (carry) {
-                    result[i] = (a.arr[i] - 1) - b.arr[i];
-                    carry = false;
-                } else {
-                    result[i] = a.arr[i] - b.arr[i];
-                }
-            } else if (a.arr[i] == b.arr[i]) { // if numbers are equal, check for carry. May need to handle that case
-                if (carry) {
-                    result[i] = (a.arr[i] - 1 + a.base) - b.arr[i];
-                } else {
-                    result[i] = a.arr[i] - b.arr[i];
-                }
-            } else { // if number in b is bigger, we take a carry and then subtract
-                if (carry) {
-                    result[i] = (a.arr[i] - 1 + a.base) - b.arr[i];
-                } else {
-                    result[i] = (a.arr[i] + a.base) - b.arr[i];
-                }
-                carry = true;
+            result[i] = a.arr[i] - b.arr[i] - borrow;
+            if (result[i] < 0) {
+                result[i] += a.base;
+                borrow = 1;
+            } else {
+                borrow = 0;
             }
-
             i++;
         }
 
         // copy rest of from longer array to result
-        long[] copySource;
-        if (a.len < b.len) {
-            copySource = b.arr;
-        } else {
-            copySource = a.arr;
-        }
+        long[] copySource = a.len > b.len ? a.arr : b.arr;
 
         while (i < copySource.length) {
-            if (carry) {
-                result[i] = copySource[i] - 1;
-                carry = false;
-                if (result[i] < 0) {
-                    result[i] += a.base;
-                    carry = true;
-                }
+            result[i] = copySource[i] - borrow;
+            if (result[i] < 0) {
+                result[i] += a.base;
+                borrow = 1;
             } else {
-                result[i] = copySource[i];
+                borrow = 0;
             }
             i++;
         }
