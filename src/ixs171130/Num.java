@@ -35,7 +35,6 @@ public class Num implements Comparable<Num> {
      *
      * @param s Input string
      */
-
     public Num(String s) {
         //check for negative
         int size = s.length();
@@ -71,64 +70,6 @@ public class Num implements Comparable<Num> {
         this.isNegative = result.isNegative;
 
     }
-
-//    public Num(String s) {
-//        if (s.indexOf("-") == 0) {
-//            isNegative = true;
-//            s = s.replace("-", "");
-//        } else {
-//            isNegative = false;
-//        }
-//
-//        /* Why next two lines are the way they are:
-//         *  We need to consider the decimal digits. Initially, I was blindly adding 1 to result of expression inside
-//         *  Math.ceil() but when there are even number of digits, we needlessly added an extra slot in the array
-//         *  which would have caused issues with operations that need size to function properly e.g. subtraction
-//         */
-//        int size;
-//        size = (int) Math.ceil(((double) s.length() / (((Long) base).toString().length() - 1)));
-//
-//        arr = new long[size];
-//
-//        // if we are given an empty string, throw an exception
-//        if (s.length() == 0) {
-//            throw new ArithmeticException("Empty string given to constructor. Can't parse as a number");
-//        }
-//
-//        // getting number of zeroes in our base, this will only support bases that are power of 10.
-//        // doing this for now because otherwise, we need to divide numbers and that's not implemented yet!
-//        int zeros = ((Long) base).toString().length() - ((Long) base).toString().replace("0", "").length();
-//
-//        // if only zeroes are passed, store a zero
-//        if (s.replace("0", "").length() == 0) {
-//            arr = new long[1];
-//        } else {
-//            int index = 0;
-//            for (int i = s.length(); i > 0; i = i - zeros) {
-//                int j = i - zeros;
-//
-//                // if we go below zero, we will be out of index
-//                if (j < 0) {
-//                    j = 0;
-//                }
-//
-//                String toAdd = s.substring(j, i);
-//
-//                // initial zeroes are not needed
-//                while ((toAdd.indexOf("0") == 0) && (toAdd.length() > 1)) {
-//                    toAdd = toAdd.substring(1);
-//                    // don't remove last zero
-//                    if (toAdd.length() == 1) {
-//                        break;
-//                    }
-//                }
-//
-//                arr[index] = (Long.parseLong(toAdd));
-//                index++;
-//            }
-//        }
-//        len = arr.length;
-//    }
 
     public Num(long x) {
         if (x == 0)
@@ -663,27 +604,6 @@ public class Num implements Comparable<Num> {
         return output.toString().trim();
     }
 
-    // Return number to a string in base 10
-//    public String toString() {
-//        BigInteger result, currentMultiplication, currentTerm, currentBase;
-//        currentBase = BigInteger.valueOf(base);
-//        result = BigInteger.valueOf(0);
-//
-//        for (int i = 0; i < arr.length; i++) {
-//            currentTerm = BigInteger.valueOf(arr[i]);
-//            currentMultiplication = currentBase.pow(i).multiply(currentTerm);
-//            result = result.add(currentMultiplication);
-//        }
-//
-//        // handle the sign
-//        StringBuilder output = new StringBuilder();
-//        if (isNegative) {
-//            output.append("-");
-//        }
-//        output.append(result.toString());
-//        return output.toString();
-//    }
-
     public String toString() {
         Num result = this.convertToBase10();
         StringBuilder output = new StringBuilder();
@@ -803,12 +723,9 @@ public class Num implements Comparable<Num> {
     // Each string is one of: "*", "+", "-", "/", "%", "^", "0", or
     // a number: [1-9][0-9]*.  There is no unary minus operator.
     public static Num evaluatePostfix(String[] expr) {
-    	
     	Stack<Num> stack = new Stack<>();
 
-    	
-    	System.out.println(expr.length);
-    	
+
     	String regex = "\\d+";
     	Num val1,val2;
 
@@ -881,7 +798,7 @@ public class Num implements Comparable<Num> {
                     if (!stack.peek().equals("~")) {
                         while ((MathOperations.getPrecedence(op) < MathOperations.getPrecedence(stack.peek())
                                 || (MathOperations.getPrecedence(op).equals(MathOperations.getPrecedence(stack.peek())) && !op.equals("^")))
-                                && (!MathOperations.determineStringType(op).equals(MathOperations.type.LEFTBRACKET))
+                                && (!MathOperations.determineStringType(op).equals(MathOperations.type.LEFT_BRACKET))
                         ) {
                             result.add(stack.pop());
 
@@ -891,9 +808,9 @@ public class Num implements Comparable<Num> {
                         }
                     }
                     stack.push(op);
-                } else if (MathOperations.determineStringType(op).equals(MathOperations.type.LEFTBRACKET)) {
+                } else if (MathOperations.determineStringType(op).equals(MathOperations.type.LEFT_BRACKET)) {
                     stack.push(op);
-                } else if (MathOperations.determineStringType(op).equals(MathOperations.type.RIGHTBRACKET)) {
+                } else if (MathOperations.determineStringType(op).equals(MathOperations.type.RIGHT_BRACKET)) {
                     while (!stack.peek().equals("(")) {
                         result.add(stack.pop());
                     }
@@ -920,7 +837,7 @@ public class Num implements Comparable<Num> {
 
     private static class MathOperations {
         private enum type {
-            OPERATOR, LEFTBRACKET, RIGHTBRACKET, NUMBER
+            OPERATOR, LEFT_BRACKET, RIGHT_BRACKET, NUMBER
         }
 
         /**
@@ -930,21 +847,21 @@ public class Num implements Comparable<Num> {
          * @return a string containing type of the input string
          */
         static type determineStringType(String str) {
-            String[] operators = {"*", "+", "-", "/", "%", "^"};
-
-            if (Arrays.asList(operators).contains(str)) {
-                return type.OPERATOR;
+            switch (str) {
+                case "*":
+                case "+":
+                case "-":
+                case "/":
+                case "%":
+                case "^":
+                    return type.OPERATOR;
+                case "(":
+                    return type.LEFT_BRACKET;
+                case ")":
+                    return type.RIGHT_BRACKET;
+                default:
+                    return type.NUMBER;
             }
-
-            if (str.equals("(")) {
-                return type.LEFTBRACKET;
-            }
-
-            if (str.equals(")")) {
-                return type.RIGHTBRACKET;
-            }
-
-            return type.NUMBER;
         }
 
         /**
@@ -979,7 +896,6 @@ public class Num implements Comparable<Num> {
 
         Num x = new Num(-1234567);
         Num y = x.convertBase(16);
-        System.out.println(y.printNumberByBase());
 //        String data = y.toStringTest();
 //        System.out.println(data);
 //
