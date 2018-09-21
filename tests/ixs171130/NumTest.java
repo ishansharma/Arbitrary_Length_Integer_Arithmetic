@@ -656,21 +656,18 @@ class NumTest {
         Num y = x.convertBase(10);
         assertEquals("1234", y.printNumberByBase());
 
-//        y = y.convertBase(16);
-//        assertEquals("4d2", y.printNumberByBase());
+        y = y.convertBase(16);
+        assertEquals("4d2", y.printNumberByBase());
 
         y = y.convertBase(10);
         assertEquals("1234", y.printNumberByBase());
 
-        x = new Num(12365);
-        y = x.convertBase(8);
-        assertEquals("30115", y.printNumberByBase());
+        y = y.convertBase(8);
+        assertEquals("2322", y.printNumberByBase());
 
-        y = y.convertBase(10);
-        assertEquals("12365", y.printNumberByBase());
+        y = y.convertBase(2000);
+        y.printNumberByBase();
 
-        x = new Num(-10);
-        assertEquals("-10", x.printNumberByBase());
     }
 
     @Test
