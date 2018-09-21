@@ -214,11 +214,18 @@ public class Num implements Comparable<Num> {
     /**
      * Subtract b from a and return a Num
      *
+     * Actual subtraction is handled in subtractInternal(), this method decides if we actually want to add (e.g. both
+     * numbers are negative) or subtract the numbers and calls subtractInternal(Num larger, Num smaller)
+     *
      * @param a First number
      * @param b Second number
      * @return result for a - b
      */
     public static Num subtract(Num a, Num b) {
+        if (a.base != b.base) {
+            throw new ArithmeticException("Numbers in different bases passed to subtract");
+        }
+
         int comparison = a.compareTo(b);
         Num result;
         if (comparison == 0) {
@@ -517,53 +524,43 @@ public class Num implements Comparable<Num> {
 
     /**
      * Compare this number to other number.
-     * <p>
-     * This is possible using subtraction as well. But we don't have subtraction and covering the edge cases first
-     * should be a little faster.
      *
      * @param other Other number, also a Num
+     *
      * @return +1 if this number is greater, 0 if numbers are equal, -1 if other number is greater
      */
     public int compareTo(Num other) {
-//         ^ is bitwise XOR.
-        if (isNegative ^ other.isNegative) {
-            return (isNegative ? -1 : 1);  // if this number is negative, return -1. Else return 1.
-        }
+        int result = 0;
 
-        // if we have same base for both
-        if (base == other.base) {
-            // If length of lists is different:
-            //  Case 1: Numbers are positive: bigger list represents bigger number
-            //  Case 2: Numbers are negative: smaller list represents bigger number
-            if (len != other.len) {
-                if (!isNegative) {
-                    return (len > other.len ? 1 : -1);
-                } else {
-                    return (len > other.len ? -1 : 1);
-                }
-            }
-
-            // If length of lists is same, we compare them starting at the tail. We stop when we find a smaller/larger
-            // number and return accordingly
-            if (!isNegative) {
-                for (int i = len - 1; i >= 0; i--) {
-                    if (arr[i] != other.arr[i]) {
-                        return (arr[i] > other.arr[i] ? 1 : -1);
-                    }
-                }
-            } else {
-                for (int i = len - 1; i >= 0; i--) {
-                    if (arr[i] != other.arr[i]) {
-                        return (arr[i] > other.arr[i] ? -1 : 1);
-                    }
-                }
-            }
-        } else {
-            // TODO: Implement different base comparison.
+        if (base != other.base) {
             throw new ArithmeticException("Numbers of different bases given");
         }
 
-        return 0;
+        // ^ is bitwise XOR, will be true only if one of the numbers is negative
+        if (isNegative ^ other.isNegative) {
+            return isNegative ? -1 : 1;  // if this number is negative, return -1. Else return 1.
+        }
+
+
+        // If length of lists is different:
+        //  Case 1: Numbers are positive: bigger list represents bigger number
+        //  Case 2: Numbers are negative: smaller list represents bigger number
+        if (len != other.len) {
+            result = len > other.len ? 1 : -1;
+            return isNegative ? result * -1 : result;
+        }
+
+        // If length of lists is same, we compare them starting at the tail. We stop when we find a smaller/larger
+        // number and return accordingly
+        for (int i = len - 1; i >= 0; i--) {
+            if (arr[i] != other.arr[i]) {
+                result = arr[i] > other.arr[i] ? 1 : -1;
+                return isNegative ? result * -1 : result;
+            }
+        }
+
+        // default condition, returning 0
+        return result;
     }
 
     // Output using the format "base: elements of list ..."
