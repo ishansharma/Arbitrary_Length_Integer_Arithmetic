@@ -728,7 +728,7 @@ public class Num implements Comparable<Num> {
                     if (!stack.peek().equals("~")) {
                         while ((MathOperations.getPrecedence(op) < MathOperations.getPrecedence(stack.peek())
                                 || (MathOperations.getPrecedence(op).equals(MathOperations.getPrecedence(stack.peek())) && !op.equals("^")))
-                                && (!MathOperations.determineStringType(op).equals(MathOperations.type.LEFTBRACKET))
+                                && (!MathOperations.determineStringType(op).equals(MathOperations.type.LEFT_BRACKET))
                         ) {
                             result.add(stack.pop());
 
@@ -738,9 +738,9 @@ public class Num implements Comparable<Num> {
                         }
                     }
                     stack.push(op);
-                } else if (MathOperations.determineStringType(op).equals(MathOperations.type.LEFTBRACKET)) {
+                } else if (MathOperations.determineStringType(op).equals(MathOperations.type.LEFT_BRACKET)) {
                     stack.push(op);
-                } else if (MathOperations.determineStringType(op).equals(MathOperations.type.RIGHTBRACKET)) {
+                } else if (MathOperations.determineStringType(op).equals(MathOperations.type.RIGHT_BRACKET)) {
                     while (!stack.peek().equals("(")) {
                         result.add(stack.pop());
                     }
@@ -767,7 +767,7 @@ public class Num implements Comparable<Num> {
 
     private static class MathOperations {
         private enum type {
-            OPERATOR, LEFTBRACKET, RIGHTBRACKET, NUMBER
+            OPERATOR, LEFT_BRACKET, RIGHT_BRACKET, NUMBER
         }
 
         /**
@@ -777,21 +777,21 @@ public class Num implements Comparable<Num> {
          * @return a string containing type of the input string
          */
         static type determineStringType(String str) {
-            String[] operators = {"*", "+", "-", "/", "%", "^"};
-
-            if (Arrays.asList(operators).contains(str)) {
-                return type.OPERATOR;
+            switch (str) {
+                case "*":
+                case "+":
+                case "-":
+                case "/":
+                case "%":
+                case "^":
+                    return type.OPERATOR;
+                case "(":
+                    return type.LEFT_BRACKET;
+                case ")":
+                    return type.RIGHT_BRACKET;
+                default:
+                    return type.NUMBER;
             }
-
-            if (str.equals("(")) {
-                return type.LEFTBRACKET;
-            }
-
-            if (str.equals(")")) {
-                return type.RIGHTBRACKET;
-            }
-
-            return type.NUMBER;
         }
 
         /**
