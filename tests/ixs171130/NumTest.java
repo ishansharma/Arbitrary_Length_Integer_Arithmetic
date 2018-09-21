@@ -741,5 +741,15 @@ class NumTest {
         expectedString = "49094201453858898563821909815715622898343840788307951790829058306066965277556690405198923330469181360047995792298590858320216851893709568850014603801957662304461999764512417471232096405932793406544518843353616811565660050247958484009364202138555194392211155816447162261055429393099785346263362040737435671744070513242674679684447717739";
         result = Num.evaluateInfix(expression7);
         assertEquals(expectedString, result.toString());
+
+        String[] expression8 = {"15", "+", "15", "^", "2"};
+        expectedString = "240";
+        result = Num.evaluateInfix(expression8);
+        assertEquals(expectedString, result.toString());
+
+        String[] expression9 = {"91", "%", "2"};
+        expectedString = "1";
+        result = Num.evaluateInfix(expression9);
+        assertEquals(expectedString, result.toString());
     }
 }
