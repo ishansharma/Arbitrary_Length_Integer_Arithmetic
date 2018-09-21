@@ -4,6 +4,7 @@
 package ixs171130;
 
 import java.util.*;
+import java.util.regex.PatternSyntaxException;
 
 public class Num implements Comparable<Num> {
 
@@ -682,6 +683,7 @@ public class Num implements Comparable<Num> {
                         break;
                     case "/":
                         stack.push(divide(val2, val1));
+                        break;
                     case "*":
                         stack.push(product(val2, val1));
                         break;
@@ -816,10 +818,17 @@ public class Num implements Comparable<Num> {
     }
 
     public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
 
-        Num x = new Num(123456, 16);
-        Num y = x.convertBase(10);
-        System.out.println(x.printNumberByBase());
+        while (true) {
+            String input = in.nextLine();
 
+            try {
+                String[] inputAr = input.split("\\s+");
+                System.out.println(Num.evaluateInfix(inputAr));
+            } catch (PatternSyntaxException e) {
+                System.out.println("Error while parsing expression");
+            }
+        }
     }
 }
