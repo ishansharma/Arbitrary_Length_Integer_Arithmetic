@@ -589,27 +589,6 @@ public class Num implements Comparable<Num> {
         return output.toString().trim();
     }
 
-    // Return number to a string in base 10
-//    public String toString() {
-//        BigInteger result, currentMultiplication, currentTerm, currentBase;
-//        currentBase = BigInteger.valueOf(base);
-//        result = BigInteger.valueOf(0);
-//
-//        for (int i = 0; i < arr.length; i++) {
-//            currentTerm = BigInteger.valueOf(arr[i]);
-//            currentMultiplication = currentBase.pow(i).multiply(currentTerm);
-//            result = result.add(currentMultiplication);
-//        }
-//
-//        // handle the sign
-//        StringBuilder output = new StringBuilder();
-//        if (isNegative) {
-//            output.append("-");
-//        }
-//        output.append(result.toString());
-//        return output.toString();
-//    }
-
     public String toString() {
         Num result = this.convertBase(10);
         StringBuilder output = new StringBuilder();
