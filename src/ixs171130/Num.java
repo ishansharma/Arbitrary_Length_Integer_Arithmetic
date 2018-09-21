@@ -1,14 +1,13 @@
 // Starter code for lp1.
 // Version 1.0 (8:00 PM, Wed, Sep 5).
 
-package rxk171530;
+package ixs171130;
 
-import java.math.BigInteger;
 import java.util.*;
 
 public class Num implements Comparable<Num> {
 
-    static long defaultBase = 100;  // Change as needed
+    static long defaultBase = 1000000000L;  // Change as needed
     long base = defaultBase;  // Change as needed
     long[] arr;  // array to store arbitrarily large integers
     boolean isNegative;  // boolean flag to represent negative numbers
@@ -30,13 +29,13 @@ public class Num implements Comparable<Num> {
         this.len = another.len;
     }
     /**
-     * Accepts a string, breaks it in to smaller elements (based on base) and store into arr
+     * Accepts a base 10 string, converts it to Num object in defaultBase
      *
      * @param s Input string
      */
 
     public Num(String s) {
-        //check for negative
+        //check for negative and remove
         int size = s.length();
         isNegative = false;
         if (s.indexOf("-") == 0) {
@@ -54,7 +53,6 @@ public class Num implements Comparable<Num> {
 
         int  j= 0;
         for(int i = s.length() -1; i>= 0; i--) {
-            String data = s.substring(i, i+1);
             arr[j++] = Long.parseLong(s.substring(i, i+1));
         }
 
@@ -131,11 +129,6 @@ public class Num implements Comparable<Num> {
         	}
 
     	}
-
-
-    	//System.out.println(len);
-
-    	System.out.println(Arrays.toString(this.arr));
 
     	
     }
@@ -518,14 +511,9 @@ public class Num implements Comparable<Num> {
     	
     	Num start = new Num("1");
     	
-    	//System.out.println(len);
-
-    	//System.out.println(Arrays.toString(start.arr));
-    	
     	Num mid,midsq,sum; 
     	
     	Num end = new Num(a.toString());
-    	//System.out.println(Arrays.toString(end.arr));
     	Num ans = new Num("-1");
     	
     	int comparision;
@@ -533,12 +521,9 @@ public class Num implements Comparable<Num> {
     	while(start.compareTo(end) <= 0)
     	{
     		sum = add(start, end);
-    		//System.out.println("sum :" + Arrays.toString(sum.arr));
     		mid = sum.by2();
-    		//System.out.println("mid :" + Arrays.toString(mid.arr));
     		midsq = product(mid,mid);
-    		//System.out.println("midsq :" + Arrays.toString(midsq.arr));
-    		
+
     		comparision = midsq.compareTo(a);
     		
     		if(comparision == 0)
@@ -546,18 +531,12 @@ public class Num implements Comparable<Num> {
     		else if(comparision < 0 )
     		{
     			start = add(mid, new Num(1));
-    			//System.out.println("midsq :" + Arrays.toString(start.arr));
     			ans = mid;
-    			//System.out.println("midsq :" + Arrays.toString(ans.arr));
     		}
     		else
     		{
     			end = subtract(mid, new Num(1));
-    			//System.out.println("midsq :" + Arrays.toString(end.arr));
     		}
-    		
-    		
-    		
     	}
     	
         return ans;
@@ -696,13 +675,9 @@ public class Num implements Comparable<Num> {
     // Return number equal to "this" number, in base=newBase
     public Num convertBase(long newBase)
     {
-    	
     	int length = this.arr.length;
     	Num result = new Num(this.arr[length-1],newBase);
-    	
-    	
     	Num oldBase = new Num(this.base, newBase);
-    	
     	Num digit,productResult;
     	
     	for(int i = length - 2; i >= 0; i--)
@@ -711,9 +686,8 @@ public class Num implements Comparable<Num> {
     		productResult = product(result,oldBase);
     		result = add(productResult ,digit );
     	}
-    	
-    	System.out.println(result.len);
-    	
+
+        result.isNegative = this.isNegative;
     	return(result);
     }
 
@@ -746,17 +720,12 @@ public class Num implements Comparable<Num> {
     public static Num evaluatePostfix(String[] expr) {
     	
     	Stack<Num> stack = new Stack<>();
-
-    	
-    	System.out.println(expr.length);
     	
     	String regex = "\\d+";
     	Num val1,val2;
 
         for (String c : expr)
     	{
-    		//System.out.println(c);
-    		
     		if(c.matches(regex))
     		{
     			stack.push(new Num(c));
