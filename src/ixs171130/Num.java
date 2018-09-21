@@ -690,6 +690,9 @@ public class Num implements Comparable<Num> {
                     case "^":
                         stack.push(power(val2, Long.parseLong(val1.toString())));
                         break;
+                    case "%":
+                        stack.push(mod(val2, val1));
+                        break;
                 }
             }
 
