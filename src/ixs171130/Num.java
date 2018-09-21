@@ -7,8 +7,11 @@ import java.util.*;
 
 public class Num implements Comparable<Num> {
 
-    static long defaultBase = 100;  // Change as needed
-    long base = defaultBase;  // Change as needed
+    // setting base to 1 followed by 9 zeroes because square root of (2^63 - 1) is 3037000448
+    // which has 10 digits. So that's max safe base. Using the nearest power of 10 because
+    // that's simpler to represent internally and test
+    static long defaultBase = 1000000000L;
+    long base = defaultBase;
     long[] arr;  // array to store arbitrarily large integers
     boolean isNegative;  // boolean flag to represent negative numbers
     int len = 0;  // actual number of elements of array that are used;  number is stored in arr[0..len-1]
