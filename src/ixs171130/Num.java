@@ -62,11 +62,7 @@ public class Num implements Comparable<Num> {
             arr[j++] = Long.parseLong(s.substring(i, i + 1));
         }
 
-        Num base10Number = new Num();
-        base10Number.arr = arr;
-        base10Number.base = 10;
-        base10Number.isNegative = isNegative;
-        base10Number.len = size;
+        Num base10Number = new Num(arr, 10, isNegative);
 
         Num result = base10Number.convertBase(defaultBase);
         this.arr = result.arr;
@@ -123,10 +119,14 @@ public class Num implements Comparable<Num> {
      * Initialize from an array
      *
      * @param array Array to initialize from
+     * @param base Base for the number
+     * @param isNegative Flag whether number is negative or positive
      */
-    public Num(long[] array) {
+    public Num(long[] array, long base, boolean isNegative) {
         arr = array;
         len = array.length;
+        this.base = base;
+        this.isNegative = isNegative;
     }
 
 
@@ -145,9 +145,7 @@ public class Num implements Comparable<Num> {
             int i = 0;
             int j = 0;
 
-            Num add = new Num();
-
-            add.arr = new long[Math.max(a.len, b.len) + 1];
+            long[] arr = new long[Math.max(a.len, b.len) + 1];
 
             int counter = 0;
 
@@ -155,7 +153,7 @@ public class Num implements Comparable<Num> {
 
                 sum = a.arr[i] + b.arr[j] + carry;
 
-                add.arr[counter] = sum % a.base;
+                arr[counter] = sum % a.base;
                 carry = sum / a.base;
 
                 i++;
@@ -166,7 +164,7 @@ public class Num implements Comparable<Num> {
 
             while (i < a.len) {
                 sum = a.arr[i] + carry;
-                add.arr[counter] = sum % a.base;
+                arr[counter] = sum % a.base;
                 carry = sum / a.base;
                 i++;
                 counter++;
@@ -176,7 +174,7 @@ public class Num implements Comparable<Num> {
             while (j < b.len) {
 
                 sum = b.arr[j] + carry;
-                add.arr[counter] = sum % a.base;
+                arr[counter] = sum % a.base;
                 carry = sum / a.base;
                 j++;
                 counter++;
@@ -184,21 +182,12 @@ public class Num implements Comparable<Num> {
             }
 
             if (carry > 0)
-                add.arr[counter] = carry;
+                arr[counter] = carry;
             else
-                add.arr[counter] = 0L;
+                arr[counter] = 0L;
 
 
-            add.len = counter;
-
-            if (a.isNegative && b.isNegative)
-                add.isNegative = true;
-
-            add.arr = removeTrailingZeros(add.arr);
-            add.len = add.arr.length;
-            add.base = a.base;
-            return (add);
-
+            result = new Num(removeTrailingZeros(arr), a.base, a.isNegative && b.isNegative);
         } else {
             if (a.compareTo(b) > 0) {
                 b.isNegative = false;
@@ -209,10 +198,9 @@ public class Num implements Comparable<Num> {
                 result = subtract(a, b);
                 a.isNegative = true;
             }
-            return result;
         }
 
-
+        return result;
     }
 
     /**
@@ -274,7 +262,6 @@ public class Num implements Comparable<Num> {
     private static Num subtractInternal(Num a, Num b) {
         int i = 0;
         long[] result = new long[(a.len > b.len) ? a.len : b.len];
-        Num resultNum;
         boolean carry = false;
 
         // subtract till both arrays have numbers
@@ -322,12 +309,7 @@ public class Num implements Comparable<Num> {
             i++;
         }
 
-        resultNum = new Num(result);
-        resultNum.arr = removeTrailingZeros(resultNum.arr);
-        resultNum.len = resultNum.arr.length;
-        resultNum.isNegative = false;
-
-        return resultNum;
+        return new Num(removeTrailingZeros(result), a.base, false);
     }
 
     //need to work on optimization, currently O(n^2)
@@ -336,7 +318,6 @@ public class Num implements Comparable<Num> {
             throw new ArithmeticException("Bases of two number for multiplication has to be same");
         }
 
-        Num product;
         int size = a.len + b.len;
         long result[] = new long[size];
         long carry;
@@ -354,14 +335,7 @@ public class Num implements Comparable<Num> {
             i++;
         }
 
-        //updating len of product and negative sign of the product
-        product = new Num();
-        product.base = a.base;
-        product.arr = removeTrailingZeros(result);
-        product.len = product.arr.length;
-        product.isNegative = (!a.isNegative || !b.isNegative) && (a.isNegative || b.isNegative);
-
-        return product;
+        return new Num(removeTrailingZeros(result), a.base, (a.isNegative ^ b.isNegative));
     }
 
     /**
@@ -651,7 +625,6 @@ public class Num implements Comparable<Num> {
         }
 
         long[] arr2 = new long[len];
-        Num result = new Num();
         long carry = 0;
         //printList();
 
@@ -659,11 +632,7 @@ public class Num implements Comparable<Num> {
             arr2[i] = (carry * base + arr[i]) / 2;
             carry = arr[i] % 2;
         }
-        result.arr = removeTrailingZeros(arr2);
-        result.base = this.base;
-        result.len = result.arr.length;
-        result.isNegative = isNegative;
-        return result;
+        return new Num(removeTrailingZeros(arr2), this.base, isNegative);
     }
 
     // Evaluate an expression in postfix and return resulting number
