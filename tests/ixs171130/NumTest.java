@@ -83,6 +83,18 @@ class NumTest {
         x = new Num(0);
         assertEquals("1000000000: 0", x.returnListAsString());
         assertFalse(x.isNegative);
+
+        // largest long possible
+        x = new Num(9223372036854775807L);
+        assertEquals("1000000000: 854775807 223372036 9", x.returnListAsString());
+        assertFalse(x.isNegative);
+        assertEquals("9223372036854775807", x.toString());
+
+        // smallest possible long
+        x = new Num(-9223372036854775807L);
+        assertEquals("1000000000: 854775807 223372036 9", x.returnListAsString());
+        assertTrue(x.isNegative);
+        assertEquals("-9223372036854775807", x.toString());
     }
 
     @Test
