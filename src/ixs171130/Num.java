@@ -625,6 +625,10 @@ public class Num implements Comparable<Num> {
 
     // Return number equal to "this" number, in base=newBase
     public Num convertBase(long newBase) {
+        if (newBase < 2) {
+            throw new ArithmeticException("Base can not be less than 2");
+        }
+
         int length = this.arr.length;
         Num result = new Num(this.arr[length - 1], newBase);
         Num oldBase = new Num(this.base, newBase);
