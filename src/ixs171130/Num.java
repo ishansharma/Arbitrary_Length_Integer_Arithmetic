@@ -28,7 +28,7 @@ public class Num implements Comparable<Num> {
         //this.defaultBase = another.defaultBase;
         this.base = another.base;
         this.arr = new long[another.arr.length];
-        if (this.arr.length >= 0) System.arraycopy(another.arr, 0, this.arr, 0, this.arr.length);
+        System.arraycopy(another.arr, 0, this.arr, 0, this.arr.length);
 
         this.isNegative = another.isNegative;
         this.len = another.len;
@@ -736,14 +736,14 @@ public class Num implements Comparable<Num> {
                 if (Operators.determineStringType(op).equals(Operators.type.NUMBER)) {
                     result.add(op);
                 } else if (Operators.determineStringType(op).equals(Operators.type.OPERATOR)) {
-                    if (stack.peek() != null && !stack.peek().equals("~")) {
-                        while ((Operators.getPrecedence(op) < Operators.getPrecedence(stack.peek())
-                                || (Operators.getPrecedence(op).equals(Operators.getPrecedence(stack.peek())) && !op.equals("^")))
+                    if (!Objects.equals(stack.peek(), "~")) {
+                        while ((Operators.getPrecedence(op) < Operators.getPrecedence(Objects.requireNonNull(stack.peek()))
+                                || (Operators.getPrecedence(op).equals(Operators.getPrecedence(Objects.requireNonNull(stack.peek()))) && !op.equals("^")))
                                 && (!Operators.determineStringType(op).equals(Operators.type.LEFT_BRACKET))
                         ) {
                             result.add(stack.pop());
 
-                            if (stack.peek() != null && stack.peek().equals("~")) {
+                            if (Objects.equals(stack.peek(), "~")) {
                                 break;
                             }
                         }
@@ -762,7 +762,7 @@ public class Num implements Comparable<Num> {
 
             // if there are more tokens to be read
             if (stack.size() != 1) {
-                while (stack.peek() != null && !stack.peek().equals("~")) {
+                while (!Objects.equals(stack.peek(), "~")) {
                     result.add(stack.pop());
                 }
             }
