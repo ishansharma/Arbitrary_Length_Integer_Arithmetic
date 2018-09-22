@@ -699,50 +699,40 @@ public class Num implements Comparable<Num> {
             throw new ArithmeticException("Empty expression given for evaluation.");
         }
 
-        List<String> result = new ArrayList<>();
+        List<String> result = new LinkedList<>();
         Deque<String> stack = new ArrayDeque<>();
         stack.push("~"); // dummy operation to determine that we've reached bottom of the stack
 
-        try {
-            for (String op : expr) {
-                // if token is number, add it to output queue
-                if (Operators.determineStringType(op).equals(Operators.type.NUMBER)) {
-                    result.add(op);
-                } else if (Operators.determineStringType(op).equals(Operators.type.OPERATOR)) {
-                    if (!Objects.equals(stack.peek(), "~")) {
-                        while ((Operators.getPrecedence(op) < Operators.getPrecedence(Objects.requireNonNull(stack.peek()))
-                                || (Operators.getPrecedence(op).equals(Operators.getPrecedence(Objects.requireNonNull(stack.peek()))) && !op.equals("^")))
-                                && (!Operators.determineStringType(op).equals(Operators.type.LEFT_BRACKET))
-                        ) {
-                            result.add(stack.pop());
 
-                            if (Objects.equals(stack.peek(), "~")) {
-                                break;
-                            }
-                        }
-                    }
-                    stack.push(op);
-                } else if (Operators.determineStringType(op).equals(Operators.type.LEFT_BRACKET)) {
-                    stack.push(op);
-                } else if (Operators.determineStringType(op).equals(Operators.type.RIGHT_BRACKET)) {
-                    while (stack.peek() != null && !stack.peek().equals("(")) {
-                        result.add(stack.pop());
-                    }
-                    stack.pop();
-                }
-            }
-
-
-            // if there are more tokens to be read
-            if (stack.size() != 1) {
-                while (!Objects.equals(stack.peek(), "~")) {
+        for (String op : expr) {
+            // if token is number, add it to output queue
+            if (Operators.determineType(op).equals(Operators.type.NUMBER)) {
+                result.add(op);
+            } else if (Operators.determineType(op).equals(Operators.type.OPERATOR)) {
+                while (!stack.peek().equals("~")
+                        && (Operators.getPrecedence(op) < Operators.getPrecedence(stack.peek())
+                        || (Operators.getPrecedence(op).equals(Operators.getPrecedence(stack.peek())) && !op.equals("^")))
+                        && (!Operators.determineType(op).equals(Operators.type.LEFT_BRACKET))
+                ) {
                     result.add(stack.pop());
                 }
+                stack.push(op);
+            } else if (Operators.determineType(op).equals(Operators.type.LEFT_BRACKET)) {
+                stack.push(op);
+            } else if (Operators.determineType(op).equals(Operators.type.RIGHT_BRACKET)) {
+                while (stack.peek() != null && !stack.peek().equals(Operators.type.RIGHT_BRACKET)) {
+                    result.add(stack.pop());
+                }
+                stack.pop();
             }
-        } catch (NullPointerException e) {
-            System.out.println("Invalid expression:, unclosed parenthesis left after end of expression.");
-            e.printStackTrace();
-            System.exit(0);
+        }
+
+
+        // if there are more tokens to be read
+        if (stack.size() != 1) {
+            while (!stack.peek().equals("~")) {
+                result.add(stack.pop());
+            }
         }
 
         String[] res = new String[result.size()];  // directly using toArray gives Object[], we want String[]
@@ -763,7 +753,7 @@ public class Num implements Comparable<Num> {
          * @param str Input string, either one of "*, +, -, /, %, ^, (, )" or a number
          * @return a string containing type of the input string
          */
-        static type determineStringType(String str) {
+        static type determineType(String str) {
             switch (str) {
                 case "*":
                 case "+":
@@ -787,15 +777,15 @@ public class Num implements Comparable<Num> {
          */
         static Integer getPrecedence(String str) {
             switch (str) {
-                case "+":
-                case "-":
-                    return 2;
+                case "^":
+                    return 4;
                 case "*":
                 case "/":
                 case "%":
                     return 3;
-                case "^":
-                    return 4;
+                case "+":
+                case "-":
+                    return 2;
                 default:
                     return 0;
             }

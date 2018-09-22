@@ -3,6 +3,8 @@ package ixs171130;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.EmptyStackException;
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -784,5 +786,23 @@ class NumTest {
         expectedString = "1";
         result = Num.evaluateInfix(expression9);
         assertEquals(expectedString, result.toString());
+    }
+
+    @Test
+    void infixEvaluationFailures() {
+        String[] expression1 = {"(", "9", "+", "10"};
+        assertThrows(EmptyStackException.class, () -> {
+            Num.evaluateInfix(expression1);
+        });
+
+        String[] expression2 = {};
+        assertThrows(ArithmeticException.class, () -> {
+            Num.evaluateInfix(expression2);
+        });
+
+        String[] expression3 = {"(", "(", "(", "(", "4568", "+", "7937", ")", "*", "(", "543", "+", "787", ")", ")", "^", "2", ")", "*", "45", "^", "100", ")", ")"};
+        assertThrows(NoSuchElementException.class, () -> {
+            Num.evaluateInfix(expression3);
+        });
     }
 }
