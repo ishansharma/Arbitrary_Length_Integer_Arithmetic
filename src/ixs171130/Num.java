@@ -1,11 +1,15 @@
-// Starter code for lp1.
-// Version 1.0 (8:00 PM, Wed, Sep 5).
-
 package ixs171130;
 
 import java.util.*;
 import java.util.regex.PatternSyntaxException;
 
+/**
+ * Represents an arbitrary length number
+ *
+ * @author Ishan Sharma, Ravikiran Kolanpaka, Sharayu Mantri
+ * @version 1.0
+ * @since 1.0
+ */
 public class Num implements Comparable<Num> {
 
     // setting base to 1 followed by 9 zeroes because square root of (2^63 - 1) is 3037000448
@@ -221,6 +225,8 @@ public class Num implements Comparable<Num> {
      * @param a First number
      * @param b Second number
      * @return result for a - b
+     *
+     * @throws ArithmeticException If numbers aren't in same base.
      */
     public static Num subtract(Num a, Num b) {
         if (a.base != b.base) {
@@ -710,9 +716,10 @@ public class Num implements Comparable<Num> {
     }
 
     /**
-     * Accept InFix expression and convert to PostFix.
+     * Accept InFix expression and convert to PostFix using Shunting Yard algorithm
+     * https://en.wikipedia.org/wiki/Shunting-yard_algorithm
      *
-     * @param expr Expression in infix notation
+     * @param expr An array of strings containing expression in infix notation
      * @return Converted expression
      */
     public static String[] convertInfixToPostfix(String[] expr) {
@@ -770,6 +777,9 @@ public class Num implements Comparable<Num> {
         return result.toArray(res);
     }
 
+    /**
+     * Child class for helping with shunting yard operations.
+     */
     private static class MathOperations {
         private enum type {
             OPERATOR, LEFT_BRACKET, RIGHT_BRACKET, NUMBER
