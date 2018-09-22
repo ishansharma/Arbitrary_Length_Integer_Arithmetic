@@ -28,8 +28,7 @@ public class Num implements Comparable<Num> {
         //this.defaultBase = another.defaultBase;
         this.base = another.base;
         this.arr = new long[another.arr.length];
-        for (int i = 0; i < this.arr.length; i++)
-            this.arr[i] = another.arr[i];
+        if (this.arr.length >= 0) System.arraycopy(another.arr, 0, this.arr, 0, this.arr.length);
 
         this.isNegative = another.isNegative;
         this.len = another.len;
@@ -734,26 +733,26 @@ public class Num implements Comparable<Num> {
         try {
             for (String op : expr) {
                 // if token is number, add it to output queue
-                if (MathOperations.determineStringType(op).equals(MathOperations.type.NUMBER)) {
+                if (Operators.determineStringType(op).equals(Operators.type.NUMBER)) {
                     result.add(op);
-                } else if (MathOperations.determineStringType(op).equals(MathOperations.type.OPERATOR)) {
-                    if (!stack.peek().equals("~")) {
-                        while ((MathOperations.getPrecedence(op) < MathOperations.getPrecedence(stack.peek())
-                                || (MathOperations.getPrecedence(op).equals(MathOperations.getPrecedence(stack.peek())) && !op.equals("^")))
-                                && (!MathOperations.determineStringType(op).equals(MathOperations.type.LEFT_BRACKET))
+                } else if (Operators.determineStringType(op).equals(Operators.type.OPERATOR)) {
+                    if (stack.peek() != null && !stack.peek().equals("~")) {
+                        while ((Operators.getPrecedence(op) < Operators.getPrecedence(stack.peek())
+                                || (Operators.getPrecedence(op).equals(Operators.getPrecedence(stack.peek())) && !op.equals("^")))
+                                && (!Operators.determineStringType(op).equals(Operators.type.LEFT_BRACKET))
                         ) {
                             result.add(stack.pop());
 
-                            if (stack.peek().equals("~")) {
+                            if (stack.peek() != null && stack.peek().equals("~")) {
                                 break;
                             }
                         }
                     }
                     stack.push(op);
-                } else if (MathOperations.determineStringType(op).equals(MathOperations.type.LEFT_BRACKET)) {
+                } else if (Operators.determineStringType(op).equals(Operators.type.LEFT_BRACKET)) {
                     stack.push(op);
-                } else if (MathOperations.determineStringType(op).equals(MathOperations.type.RIGHT_BRACKET)) {
-                    while (!stack.peek().equals("(")) {
+                } else if (Operators.determineStringType(op).equals(Operators.type.RIGHT_BRACKET)) {
+                    while (stack.peek() != null && !stack.peek().equals("(")) {
                         result.add(stack.pop());
                     }
                     stack.pop();
@@ -763,7 +762,7 @@ public class Num implements Comparable<Num> {
 
             // if there are more tokens to be read
             if (stack.size() != 1) {
-                while (!stack.peek().equals("~")) {
+                while (stack.peek() != null && !stack.peek().equals("~")) {
                     result.add(stack.pop());
                 }
             }
@@ -780,7 +779,7 @@ public class Num implements Comparable<Num> {
     /**
      * Child class for helping with shunting yard operations.
      */
-    private static class MathOperations {
+    private static class Operators {
         private enum type {
             OPERATOR, LEFT_BRACKET, RIGHT_BRACKET, NUMBER
         }
