@@ -44,6 +44,7 @@ public class Num implements Comparable<Num> {
         //check for negative and remove
         int size = s.length();
         isNegative = false;
+
         if (s.indexOf("-") == 0) {
             isNegative = true;
             size = size - 1;
@@ -58,8 +59,9 @@ public class Num implements Comparable<Num> {
         }
 
         int j = 0;
+        char[] input = s.toCharArray();
         for (int i = s.length() - 1; i >= 0; i--) {
-            arr[j++] = Long.parseLong(s.substring(i, i + 1));
+            arr[j++] = (int)input[i] - (int)'0';
         }
 
         Num base10Number = new Num(arr, 10, isNegative);
@@ -138,7 +140,7 @@ public class Num implements Comparable<Num> {
         }
 
 
-        if (a.isNegative && b.isNegative || (!a.isNegative && !b.isNegative)) {
+        if (!(a.isNegative ^ b.isNegative)) {
             Long sum;
             Long carry = 0L;
 
@@ -313,6 +315,16 @@ public class Num implements Comparable<Num> {
     }
 
     //need to work on optimization, currently O(n^2)
+
+    /**
+     * Performs mulitplication any two Num types
+     * Throws exceptions if bases are different
+     * Used basic long multiplication https://en.wikipedia.org/wiki/Multiplication_algorithm
+     * @param a Multiplication operand 1
+     * @param b Multiplication operand 1
+     * @return a * b ( for both and b in base b)
+     *
+     */
     public static Num product(Num a, Num b) {
         if (a.base != b.base) {
             throw new ArithmeticException("Bases of two number for multiplication has to be same");
@@ -379,10 +391,18 @@ public class Num implements Comparable<Num> {
     }
 
     // Use binary search to calculate a/b
-    public static Num divide(Num a, Num b) {
 
-        Num dividend = new Num(a);
-        Num divisor = new Num(b);
+    /**
+     * Divide two Num Types dividend / divisor
+     * @param dividend : base b
+     * @param divisor : base b
+     * @return a / b
+     * returns null if divide by 0 and floor value for decimal divisions
+     */
+    public static Num divide(Num dividend, Num divisor) {
+
+        boolean dividendNegative = dividend.isNegative;
+        boolean divisorNegative = divisor.isNegative;
         boolean flag = false;
 
         if (dividend.isNegative ^ divisor.isNegative) {
@@ -416,6 +436,8 @@ public class Num implements Comparable<Num> {
             Num sub = subtract(higher, lower);
             if (prevSub.compareTo(sub) == 0) {
                 lower.isNegative = flag;
+                dividend.isNegative = dividendNegative;
+                divisor.isNegative = divisorNegative;
                 return lower;
             }
             prevSub = sub;
@@ -432,6 +454,8 @@ public class Num implements Comparable<Num> {
             //if compare returns 0 then mid is quotient
             if (compareToDM == 0) {
                 mid.isNegative = flag;
+                dividend.isNegative = dividendNegative;
+                divisor.isNegative = divisorNegative;
                 return mid;
             }
             //else if -1 then mid is lower half
@@ -445,12 +469,19 @@ public class Num implements Comparable<Num> {
         }
     }
 
-    // return a%b
-    //Assumption a and b are non negative and b > 0
-    //mod return remainder else returns null if b = 0
+    /**
+     * Assumption a and b are non negative and b > 0
+     * mod return remainder else returns null if b = 0
+     * @param a : dividend
+     * @param b : divisor
+     * @return a % b (both in base b)
+     */
     public static Num mod(Num a, Num b) {
         if (a.isNegative || b.isNegative) {
             throw new ArithmeticException(" Mod function arguments cannot be negative ");
+        }
+        if(a.compareTo(b) == -1) {
+            return a;
         }
         Num quotient = divide(a, b);
         if (quotient == null) {
@@ -585,6 +616,10 @@ public class Num implements Comparable<Num> {
         return base;
     }
 
+    /**
+     * Utility function for testing in convertBase for base lower than 56
+     * @return
+     */
     public String printNumberByBase() {
         StringBuilder output = new StringBuilder();
         if (isNegative) {
@@ -606,19 +641,23 @@ public class Num implements Comparable<Num> {
         int length = this.arr.length;
         Num result = new Num(this.arr[length - 1], newBase);
         Num oldBase = new Num(this.base, newBase);
-        Num digit, productResult;
+        Num digit;
 
         for (int i = length - 2; i >= 0; i--) {
             digit = new Num(this.arr[i], newBase);
-            productResult = product(result, oldBase);
-            result = add(productResult, digit);
+            result = product(result, oldBase);
+            result = add(result, digit);
         }
 
         result.isNegative = this.isNegative;
         return (result);
     }
 
-    // Divide by 2, for using in binary search
+    /**
+     * Divide by 2 basic division logic
+     * this function is used during binary search for normal division
+     * @return Num / 2
+     */
     public Num by2() {
         if (len == 0) {
             return new Num(0);
@@ -626,7 +665,6 @@ public class Num implements Comparable<Num> {
 
         long[] arr2 = new long[len];
         long carry = 0;
-        //printList();
 
         for (int i = len - 1; i >= 0; i--) {
             arr2[i] = (carry * base + arr[i]) / 2;
@@ -641,7 +679,6 @@ public class Num implements Comparable<Num> {
     public static Num evaluatePostfix(String[] expr) {
 
         Stack<Num> stack = new Stack<>();
-
         String regex = "\\d+";
         Num val1, val2;
 
