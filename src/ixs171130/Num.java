@@ -706,21 +706,20 @@ public class Num implements Comparable<Num> {
 
         for (String op : expr) {
             // if token is number, add it to output queue
-            if (Operators.determineType(op).equals(Operators.type.NUMBER)) {
+            if (Operators.getType(op).equals(Operators.type.NUMBER)) {
                 result.add(op);
-            } else if (Operators.determineType(op).equals(Operators.type.OPERATOR)) {
-                while (!stack.peek().equals("~")
-                        && (Operators.getPrecedence(op) < Operators.getPrecedence(stack.peek())
+            } else if (Operators.getType(op).equals(Operators.type.OPERATOR)) {
+                while ((Operators.getPrecedence(op) < Operators.getPrecedence(stack.peek())
                         || (Operators.getPrecedence(op).equals(Operators.getPrecedence(stack.peek())) && !op.equals("^")))
-                        && (!Operators.determineType(op).equals(Operators.type.LEFT_BRACKET))
+                        && (!Operators.getType(op).equals(Operators.type.LEFT_BRACKET))
                 ) {
                     result.add(stack.pop());
                 }
                 stack.push(op);
-            } else if (Operators.determineType(op).equals(Operators.type.LEFT_BRACKET)) {
+            } else if (Operators.getType(op).equals(Operators.type.LEFT_BRACKET)) {
                 stack.push(op);
-            } else if (Operators.determineType(op).equals(Operators.type.RIGHT_BRACKET)) {
-                while (stack.peek() != null && !stack.peek().equals(Operators.type.RIGHT_BRACKET)) {
+            } else if (Operators.getType(op).equals(Operators.type.RIGHT_BRACKET)) {
+                while (!stack.peek().equals("(")) {
                     result.add(stack.pop());
                 }
                 stack.pop();
@@ -729,11 +728,10 @@ public class Num implements Comparable<Num> {
 
 
         // if there are more tokens to be read
-        if (stack.size() != 1) {
-            while (!stack.peek().equals("~")) {
-                result.add(stack.pop());
-            }
+        while (!stack.peek().equals("~")) {
+            result.add(stack.pop());
         }
+
 
         String[] res = new String[result.size()];  // directly using toArray gives Object[], we want String[]
         return result.toArray(res);
@@ -753,7 +751,7 @@ public class Num implements Comparable<Num> {
          * @param str Input string, either one of "*, +, -, /, %, ^, (, )" or a number
          * @return a string containing type of the input string
          */
-        static type determineType(String str) {
+        static type getType(String str) {
             switch (str) {
                 case "*":
                 case "+":
