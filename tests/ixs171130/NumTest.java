@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.EmptyStackException;
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -805,7 +806,7 @@ class NumTest {
         });
 
         String[] expression3 = {"(", "(", "(", "(", "4568", "+", "7937", ")", "*", "(", "543", "+", "787", ")", ")", "^", "2", ")", "*", "45", "^", "100", ")", ")"};
-        assertThrows(NullPointerException.class, () -> {
+        assertThrows(NoSuchElementException.class, () -> {
             Num.evaluateInfix(expression3);
         });
     }
