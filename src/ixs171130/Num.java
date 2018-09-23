@@ -496,7 +496,7 @@ public class Num implements Comparable<Num> {
     public static Num squareRoot(Num a) throws Exception {
 
         if (a.isNegative)
-            throw new Exception("No Square root for Negative Numbers");
+            throw new ArithmeticException("No Square root for Negative Numbers");
 
         if (a.compareTo(new Num("0")) == 0)
             return (new Num("0"));
