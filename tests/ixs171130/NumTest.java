@@ -553,6 +553,10 @@ class NumTest {
         Num x, y, z;
 
         x = new Num("123456789");
+        y = new Num("1");
+        assertEquals("123456789", Num.divide(x, y).toString());
+
+        x = new Num("123456789");
         y = new Num("4567");
         assertEquals("27032", Num.divide(x, y).toString());
 
@@ -688,6 +692,18 @@ class NumTest {
     @Test
     void testMod() {
         Num x, y, z;
+
+        x = new Num("0");
+        y = new Num("1");
+        assertEquals("0", Num.mod(x, y).toString());
+
+        x = new Num("1");
+        y = new Num("1");
+        assertEquals("0", Num.mod(x, y).toString());
+
+        x = new Num("123456789");
+        y = new Num("1");
+        assertEquals("0", Num.mod(x, y).toString());
 
         x = new Num("123456789");
         y = new Num("4567");

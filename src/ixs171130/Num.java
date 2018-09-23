@@ -486,45 +486,29 @@ public class Num implements Comparable<Num> {
         dividend.isNegative = false;
         divisor.isNegative = false;
 
-        if (divisor.len == 1 && divisor.arr[0] == 0) {
+        if (divisor.compareTo(new Num(0, divisor.base)) == 0){
             return null;
         }
 
+
         if (dividend.len < divisor.len || (dividend.len == divisor.len &&
                 dividend.arr[dividend.len - 1] < divisor.arr[divisor.len - 1])) {
-            Num result = new Num(0);
+            Num result = new Num(0, dividend.base);
             result.base = dividend.base;
             return result;
         }
 
-        Num lower = new Num(0);
-        lower.base = dividend.base;
-
+        Num lower = new Num(1, dividend.base);
         Num higher = new Num(dividend);
+        Num ans = new Num(-1, dividend.base);
+        while (lower.compareTo(higher) <= 0) {
 
-        Num prevSub = new Num(0);
-        prevSub.base = lower.base;
-
-        while (true) {
-
-            //subtract higher - lower
-            Num sub = subtract(higher, lower);
-            if (prevSub.compareTo(sub) == 0) {
-                lower.isNegative = flag;
-                dividend.isNegative = dividendNegative;
-                divisor.isNegative = divisorNegative;
-                return lower;
-            }
-            prevSub = sub;
-
-            //get mid  = lower + (higher - lower)/2
-            Num by2 = sub.by2();
-            Num mid = add(lower, by2);
+            //get mid  = (higher + lower)/2
+            Num mid = add(lower, higher).by2();
 
             //Compare ( divisor * mid - dividend, 0)
-            Num zero = new Num(0);
-            zero.base = dividend.base;
-            int compareToDM = subtract(product(divisor, mid), dividend).compareTo(zero);
+            Num one = new Num(1, dividend.base);
+            int compareToDM = product(divisor, mid).compareTo(dividend);
 
             //if compare returns 0 then mid is quotient
             if (compareToDM == 0) {
@@ -535,14 +519,22 @@ public class Num implements Comparable<Num> {
             }
             //else if -1 then mid is lower half
             else if (compareToDM < 0) {
-                lower = mid;
+                lower = add(mid, one);
+                ans = mid;
             }
             //else mid is in the upper half
             else {
-                higher = mid;
+                higher = subtract(mid, one);
             }
         }
+
+        ans.isNegative = flag;
+        dividend.isNegative = dividendNegative;
+        divisor.isNegative = divisorNegative;
+        return ans;
     }
+
+
 
     /**
      * Calculate mod.
