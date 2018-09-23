@@ -3,7 +3,7 @@ package ixs171130;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.EmptyStackException;
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -142,6 +142,13 @@ class NumTest {
         assertEquals("0", result.toString());
         assertFalse(result.isNegative);
         assertEquals(1000000000L, result.base);
+
+        // one failed case
+        x = new Num("-523");
+        y = new Num("1000");
+        result = Num.add(x, y);
+        assertEquals("477", result.toString());
+        assertFalse(result.isNegative);
 
         // add a positive and a negative number
         x = new Num("340282366920938463463374607431768211456");
@@ -573,6 +580,14 @@ class NumTest {
         y = new Num("0");
         assertNull(Num.divide(x, y));
 
+        x = new Num("200");
+        y = new Num("1");
+        assertEquals("200", Num.divide(x, y).toString());
+
+        x = new Num("200");
+        y = new Num("2");
+        assertEquals("100", Num.divide(x, y).toString());
+
         // x = 97 ^ 99
         // y = 85 ^ 67
         x = new Num("49023204046810063052865617754531993076026071520903088968920741451572890340395967569520426628951284340118127138453851707836951742337890127232804456106417984709109735388024795899433618241972372230433");
@@ -790,12 +805,27 @@ class NumTest {
         expectedString = "1";
         result = Num.evaluateInfix(expression9);
         assertEquals(expectedString, result.toString());
+
+        String[] expression10 = {"1650", "+", "1996"};
+        expectedString = "3646";
+        result = Num.evaluateInfix(expression10);
+        assertEquals(expectedString, result.toString());
+
+        String[] expression11 = {"-1", "-", "-2"};
+        expectedString = "1";
+        result = Num.evaluateInfix(expression11);
+        assertEquals(expectedString, result.toString());
+
+        String[] expression12 = {"-1", "*", "209"};
+        expectedString = "-209";
+        result = Num.evaluateInfix(expression12);
+        assertEquals(expectedString, result.toString());
     }
 
     @Test
     void infixEvaluationFailures() {
         String[] expression1 = {"(", "9", "+", "10"};
-        assertThrows(EmptyStackException.class, () -> {
+        assertThrows(NoSuchElementException.class, () -> {
             Num.evaluateInfix(expression1);
         });
 

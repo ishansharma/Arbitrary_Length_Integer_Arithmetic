@@ -234,7 +234,7 @@ public class Num implements Comparable<Num> {
                 b.isNegative = true;
             } else {
                 a.isNegative = false;
-                result = subtract(a, b);
+                result = subtract(b, a);
                 a.isNegative = true;
             }
         }
@@ -787,12 +787,11 @@ public class Num implements Comparable<Num> {
      */
     public static Num evaluatePostfix(String[] expr) {
 
-        Stack<Num> stack = new Stack<>();
-        String regex = "\\d+";
+        Deque<Num> stack = new ArrayDeque<>();
         Num val1, val2;
 
         for (String c : expr) {
-            if (c.matches(regex)) {
+            if (Objects.equals(Operators.getType(c), Operators.type.NUMBER)) {
                 stack.push(new Num(c));
             } else {
                 val1 = stack.pop();
