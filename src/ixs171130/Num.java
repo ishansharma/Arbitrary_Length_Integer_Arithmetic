@@ -460,7 +460,6 @@ public class Num implements Comparable<Num> {
             result = powerInternal(a, n);
             result.base = a.base;
             result.len = result.arr.length;
-
         }
         return result;
 
@@ -500,7 +499,7 @@ public class Num implements Comparable<Num> {
 
         Num lower = new Num(1, dividend.base);
         Num higher = new Num(dividend);
-        Num ans = new Num(-1, dividend.base);
+        Num ans = new Num(1, dividend.base);
         while (lower.compareTo(higher) <= 0) {
 
             //get mid  = (higher + lower)/2
