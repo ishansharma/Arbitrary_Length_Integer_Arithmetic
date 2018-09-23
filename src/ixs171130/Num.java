@@ -44,7 +44,6 @@ public class Num implements Comparable<Num> {
         //check for negative and remove
         int size = s.length();
         isNegative = false;
-
         if (s.indexOf("-") == 0) {
             isNegative = true;
             size = size - 1;
@@ -74,14 +73,35 @@ public class Num implements Comparable<Num> {
 
     }
 
+    /**
+     * @param x - input is a long number which needs to be converted into a Num format
+     *          in default base.
+     *          The constructor will call intializeArray(x,base).
+     */
+
     public Num(long x) {
         initializeArray(x, defaultBase);
     }
 
+    /**
+     * @param x    - a long number which needs to be converted into a Num format.
+     * @param base - the base which we want to be converted to.
+     */
     public Num(long x, long base) {
         initializeArray(x, base);
     }
 
+
+    /**
+     *
+     * @param x - a long number which needs to be converted into a Num format. 
+     * @param base - the base which we want to be converted to. 
+     *
+     * Here I repeatedly divide the number of the base to get the size of the array. 
+     *
+     * Here There will be two while loops. One is to calculate the size of the array.
+     * The second is to store the numbers in the array. 
+     */
 
     public void initializeArray(long x, long base) {
         this.base = base;
@@ -132,6 +152,18 @@ public class Num implements Comparable<Num> {
     }
 
 
+    /**
+     *
+     * @param a - First number to be added. 
+     * @param b - Second number to be added. 
+     * @return the added number in NUM format. 
+     *
+     * Iterating through both the arrays simultaneously and adding the digits 
+     * along with the carry. 
+     *
+     * If one of the arrays is not empty and other is empty. The add takes only that array. 
+     *
+     */
     public static Num add(Num a, Num b) {
         Num result;
 
@@ -375,8 +407,23 @@ public class Num implements Comparable<Num> {
         return result;
     }
 
-    // Use divide and conquer
-    public static Num power(Num a, long n) {
+    /**
+     * @param a - A number whose power needs to be calculated whose isNegative will be positive.
+     * @param n - the power.
+     * @return power of the number.
+     * <p>
+     * Used divide and conquer method to calculate the power of the number recursively.
+     * <p>
+     * power(a,n/2) is called which is stored in temp.
+     * <p>
+     * if n is an even number - temp square is calculated and returned.
+     * other wise a * temp square is calcualted.
+     */
+
+    public static Num powerInternal(Num a, long n) {
+        if (n < 0)
+            throw new ArithmeticException("Power of negative number not possible");
+
 
         if (n == 0) {
             return new Num(1);
@@ -389,6 +436,44 @@ public class Num implements Comparable<Num> {
         else
             return (product(a, product(temp, temp)));
     }
+
+    // Use divide and conquer
+
+    /**
+     * @param a - A number whose power needs to be calculated whose isNegative will be positive.
+     * @param n - the power.
+     * @return power of the number.
+     * <p>
+     * checks if n is positive number of not. if negative number, checks if it is even or not.
+     */
+    public static Num power(Num a, long n) {
+
+        Num result;
+        boolean flag;
+
+        if (a.isNegative == true) {
+            flag = a.isNegative;
+            a.isNegative = false;
+            result = powerInternal(a, n);
+            if (n % 2 == 0) {
+                result.isNegative = false;
+            } else {
+                result.isNegative = true;
+            }
+            result.base = a.base;
+            result.len = result.arr.length;
+            a.isNegative = true;
+
+        } else {
+            result = powerInternal(a, n);
+            result.base = a.base;
+            result.len = result.arr.length;
+
+        }
+        return result;
+
+    }
+
 
     // Use binary search to calculate a/b
 
@@ -492,8 +577,18 @@ public class Num implements Comparable<Num> {
         return subtract(a, product);
     }
 
-    // Use binary search
-    public static Num squareRoot(Num a) throws Exception {
+    /**
+     *
+     * @param a - The number whose square root needs to be calculated. 
+     * @return - square root of th number. 
+     *
+     * binary search is used from start = 1  till end = a/2. 
+     *
+     * every time midsquare is calculated and compared with the actual number. 
+     *
+     * if it is equal that number is returned. 
+     */
+    public static Num squareRoot(Num a) {
 
         if (a.isNegative)
             throw new ArithmeticException("No Square root for Negative Numbers");
@@ -505,7 +600,7 @@ public class Num implements Comparable<Num> {
 
         Num mid, midsq, sum;
 
-        Num end = new Num(a.toString());
+        Num end = new Num(a.by2());
         Num ans = new Num("-1");
 
         int comparision;
@@ -632,7 +727,15 @@ public class Num implements Comparable<Num> {
     }
 
 
-    // Return number equal to "this" number, in base=newBase
+    /**
+     *
+     *
+     * @param newBase - the new base in which the number needs to be calculated. 
+     * @return the number in the new base. 
+     *
+     * Here each digit in the array is taken and converted into NUM format using the long constructor. 
+     * And then hornors method is calculated with each digit represented in the new base format. 
+     */
     public Num convertBase(long newBase) {
         if (newBase < 2) {
             throw new ArithmeticException("Base can not be less than 2");
@@ -676,6 +779,17 @@ public class Num implements Comparable<Num> {
     // Evaluate an expression in postfix and return resulting number
     // Each string is one of: "*", "+", "-", "/", "%", "^", "0", or
     // a number: [1-9][0-9]*.  There is no unary minus operator.
+    /**
+     *
+     * @param expr - each string is either an operator or an operand. 
+     * @return the evaluation of that number.
+     *
+     * Data structure used is a stack. 
+     *
+     * if the input is an operand(Num). it is pushed into the stack. 
+     * If the input is an operator. two NUMs are popped and their respective expression 
+     * is calculated. 
+     */
     public static Num evaluatePostfix(String[] expr) {
 
         Stack<Num> stack = new Stack<>();
