@@ -13,22 +13,23 @@ import java.util.regex.PatternSyntaxException;
 public class Num implements Comparable<Num> {
 
     // setting base to 1 followed by 9 zeroes because square root of (2^63 - 1) is 3037000448
-    // which has 10 digits. So that's max safe base. Using the nearest power of 10 because
-    // that's simpler to represent internally and test
+    // which has 10 digits. So that's max safe base.
+    // Using the nearest power of 10 because that's simpler to represent and test
     static final long defaultBase = 1000000000L;
     long base = defaultBase;
     long[] arr;  // array to store arbitrarily large integers
     boolean isNegative;  // boolean flag to represent negative numbers
     int len = 0;  // actual number of elements of array that are used;  number is stored in arr[0..len-1]
 
-    public Num() {
-    }
-
+    /**
+     * Copy constructor for functions that need a copy of current number
+     *
+     * @param another Num object to copy from
+     */
     public Num(Num another) {
-        //this.defaultBase = another.defaultBase;
         this.base = another.base;
         this.arr = new long[another.arr.length];
-        System.arraycopy(another.arr, 0, this.arr, 0, this.arr.length);
+        System.arraycopy(another.arr, 0, this.arr, 0, this.arr.length);  // manual copying is more lines
 
         this.isNegative = another.isNegative;
         this.len = another.len;
@@ -39,7 +40,6 @@ public class Num implements Comparable<Num> {
      *
      * @param s Input string
      */
-
     public Num(String s) {
         //check for negative and remove
         int size = s.length();
@@ -60,7 +60,7 @@ public class Num implements Comparable<Num> {
         int j = 0;
         char[] input = s.toCharArray();
         for (int i = s.length() - 1; i >= 0; i--) {
-            arr[j++] = (int)input[i] - (int)'0';
+            arr[j++] = (int) input[i] - (int) '0';
         }
 
         Num base10Number = new Num(arr, 10, isNegative);
@@ -74,9 +74,11 @@ public class Num implements Comparable<Num> {
     }
 
     /**
-     * @param x - input is a long number which needs to be converted into a Num format
-     *          in default base.
-     *          The constructor will call intializeArray(x,base).
+     * Accepts a long and needs converts into a Num in default base
+     * <p>
+     * This constructor will call intializeArray(x,base) internally.
+     *
+     * @param x long number
      */
 
     public Num(long x) {
@@ -84,7 +86,9 @@ public class Num implements Comparable<Num> {
     }
 
     /**
-     * @param x    - a long number which needs to be converted into a Num format.
+     * Converts a long number to Num in an arbitrary base
+     *
+     * @param x    - long number which needs to be converted into a Num format.
      * @param base - the base which we want to be converted to.
      */
     public Num(long x, long base) {
@@ -93,14 +97,15 @@ public class Num implements Comparable<Num> {
 
 
     /**
+     * Internal function used by long constructor.
      *
-     * @param x - a long number which needs to be converted into a Num format. 
-     * @param base - the base which we want to be converted to. 
-     *
-     * Here I repeatedly divide the number of the base to get the size of the array. 
-     *
-     * Here There will be two while loops. One is to calculate the size of the array.
-     * The second is to store the numbers in the array. 
+     * @param x    - a long number which needs to be converted into a Num format.
+     * @param base - the base which we want to be converted to.
+     *             <p>
+     *             Here I repeatedly divide the number of the base to get the size of the array.
+     *             <p>
+     *             Here There will be two while loops. One is to calculate the size of the array.
+     *             The second is to store the numbers in the array.
      */
 
     public void initializeArray(long x, long base) {
@@ -140,8 +145,8 @@ public class Num implements Comparable<Num> {
     /**
      * Initialize from an array
      *
-     * @param array Array to initialize from
-     * @param base Base for the number
+     * @param array      Array to initialize from
+     * @param base       Base for the number
      * @param isNegative Flag whether number is negative or positive
      */
     public Num(long[] array, long base, boolean isNegative) {
@@ -153,16 +158,16 @@ public class Num implements Comparable<Num> {
 
 
     /**
+     * Add two numbers
      *
-     * @param a - First number to be added. 
-     * @param b - Second number to be added. 
-     * @return the added number in NUM format. 
-     *
-     * Iterating through both the arrays simultaneously and adding the digits 
-     * along with the carry. 
-     *
-     * If one of the arrays is not empty and other is empty. The add takes only that array. 
-     *
+     * @param a - First number to be added.
+     * @param b - Second number to be added.
+     * @return the added number in NUM format.
+     * <p>
+     * Iterating through both the arrays simultaneously and adding the digits
+     * along with the carry.
+     * <p>
+     * If one of the arrays is not empty and other is empty, add takes only that array.
      */
     public static Num add(Num a, Num b) {
         Num result;
@@ -172,7 +177,7 @@ public class Num implements Comparable<Num> {
         }
 
 
-        if (!(a.isNegative ^ b.isNegative)) {
+        if (a.isNegative == b.isNegative) {
             Long sum;
             Long carry = 0L;
 
@@ -239,14 +244,13 @@ public class Num implements Comparable<Num> {
 
     /**
      * Subtract b from a and return a Num
-     *
+     * <p>
      * Actual subtraction is handled in subtractInternal(), this method decides if we actually want to add (e.g. both
      * numbers are negative) or subtract the numbers and calls subtractInternal(Num larger, Num smaller)
      *
      * @param a First number
      * @param b Second number
      * @return result for a - b
-     *
      * @throws ArithmeticException If numbers aren't in same base.
      */
     public static Num subtract(Num a, Num b) {
@@ -287,7 +291,7 @@ public class Num implements Comparable<Num> {
     }
 
     /**
-     * Handles the actual subtraction for a - b. a has to be bigger than b.
+     * Handles the subtraction for a - b. a has to be bigger than b.
      *
      * @param a Larger number
      * @param b Smaller number
@@ -296,47 +300,42 @@ public class Num implements Comparable<Num> {
     private static Num subtractInternal(Num a, Num b) {
         int i = 0;
         long[] result = new long[(a.len > b.len) ? a.len : b.len];
-        boolean carry = false;
+        boolean borrow = false;
 
         // subtract till both arrays have numbers
         while (i < a.len && i < b.len) {
             if (a.arr[i] > b.arr[i]) {  // if number in a is bigger, we just subtract and save that to result
-                if (carry) {
+                if (borrow) {
                     result[i] = (a.arr[i] - 1) - b.arr[i];
-                    carry = false;
+                    borrow = false;
                 } else {
                     result[i] = a.arr[i] - b.arr[i];
                 }
-            } else if (a.arr[i] == b.arr[i]) {
-                if (carry) {
+            } else if (a.arr[i] == b.arr[i]) { // if both numbers are equal, check for borrow and take carry
+                if (borrow) {
                     result[i] = (a.arr[i] - 1 + a.base) - b.arr[i];
                 } else {
                     result[i] = a.arr[i] - b.arr[i];
                 }
-            } else { // if number in b is bigger, we take a carry and then subtract
-                if (carry) {
+            } else { // if number in b is bigger, we take a borrow and then subtract
+                if (borrow) {
                     result[i] = (a.arr[i] - 1 + a.base) - b.arr[i];
                 } else {
                     result[i] = (a.arr[i] + a.base) - b.arr[i];
+                    borrow = true;
                 }
-                carry = true;
             }
 
             i++;
         }
 
-        // copy rest of from longer array to result
-        long[] copySource;
-        if (a.len < b.len) {
-            copySource = b.arr;
-        } else {
-            copySource = a.arr;
-        }
+        // copy rest of numbers from longer array to result
+        long[] copySource = a.len < b.len ? b.arr : a.arr; // copySource will point to bigger array
 
         while (i < copySource.length) {
-            if (carry) {
+            if (borrow) {
                 result[i] = copySource[i] - 1;
-                carry = false;
+                borrow = false;
             } else {
                 result[i] = copySource[i];
             }
@@ -346,16 +345,15 @@ public class Num implements Comparable<Num> {
         return new Num(removeTrailingZeros(result), a.base, false);
     }
 
-    //need to work on optimization, currently O(n^2)
-
     /**
-     * Performs mulitplication any two Num types
-     * Throws exceptions if bases are different
+     * Performs multiplication for two Num objects
+     * <p>
      * Used basic long multiplication https://en.wikipedia.org/wiki/Multiplication_algorithm
+     *
      * @param a Multiplication operand 1
      * @param b Multiplication operand 1
      * @return a * b ( for both and b in base b)
-     *
+     * @throws ArithmeticException If bases are different
      */
     public static Num product(Num a, Num b) {
         if (a.base != b.base) {
@@ -408,18 +406,17 @@ public class Num implements Comparable<Num> {
     }
 
     /**
-     * @param a - A number whose power needs to be calculated whose isNegative will be positive.
-     * @param n - the power.
-     * @return power of the number.
-     * <p>
      * Used divide and conquer method to calculate the power of the number recursively.
      * <p>
      * power(a,n/2) is called which is stored in temp.
      * <p>
      * if n is an even number - temp square is calculated and returned.
      * other wise a * temp square is calcualted.
+     *
+     * @param a - A number whose power needs to be calculated whose isNegative will be positive.
+     * @param n - the power.
+     * @return power of the number.
      */
-
     public static Num powerInternal(Num a, long n) {
         if (n < 0)
             throw new ArithmeticException("Power of negative number not possible");
@@ -437,8 +434,6 @@ public class Num implements Comparable<Num> {
             return (product(a, product(temp, temp)));
     }
 
-    // Use divide and conquer
-
     /**
      * @param a - A number whose power needs to be calculated whose isNegative will be positive.
      * @param n - the power.
@@ -447,12 +442,9 @@ public class Num implements Comparable<Num> {
      * checks if n is positive number of not. if negative number, checks if it is even or not.
      */
     public static Num power(Num a, long n) {
-
         Num result;
-        boolean flag;
 
-        if (a.isNegative == true) {
-            flag = a.isNegative;
+        if (a.isNegative) {
             a.isNegative = false;
             result = powerInternal(a, n);
             if (n % 2 == 0) {
@@ -474,13 +466,11 @@ public class Num implements Comparable<Num> {
 
     }
 
-
-    // Use binary search to calculate a/b
-
     /**
      * Divide two Num Types dividend / divisor
+     *
      * @param dividend : base b
-     * @param divisor : base b
+     * @param divisor  : base b
      * @return a / b
      * returns null if divide by 0 and floor value for decimal divisions
      */
@@ -555,8 +545,10 @@ public class Num implements Comparable<Num> {
     }
 
     /**
-     * Assumption a and b are non negative and b > 0
-     * mod return remainder else returns null if b = 0
+     * Calculate mod.
+     * Assumptions: a and b are non negative and b > 0
+     * mod returns remainder else returns null if b = 0
+     *
      * @param a : dividend
      * @param b : divisor
      * @return a % b (both in base b)
@@ -565,7 +557,7 @@ public class Num implements Comparable<Num> {
         if (a.isNegative || b.isNegative) {
             throw new ArithmeticException(" Mod function arguments cannot be negative ");
         }
-        if(a.compareTo(b) == -1) {
+        if (a.compareTo(b) < 0) {
             return a;
         }
         Num quotient = divide(a, b);
@@ -578,15 +570,14 @@ public class Num implements Comparable<Num> {
     }
 
     /**
-     *
-     * @param a - The number whose square root needs to be calculated. 
-     * @return - square root of th number. 
-     *
-     * binary search is used from start = 1  till end = a/2. 
-     *
-     * every time midsquare is calculated and compared with the actual number. 
-     *
-     * if it is equal that number is returned. 
+     * @param a - The number whose square root needs to be calculated.
+     * @return - square root of th number.
+     * <p>
+     * binary search is used from start = 1  till end = a/2.
+     * <p>
+     * every time midsquare is calculated and compared with the actual number.
+     * <p>
+     * if it is equal that number is returned.
      */
     public static Num squareRoot(Num a) {
 
@@ -625,14 +616,10 @@ public class Num implements Comparable<Num> {
         return ans;
     }
 
-
-    // Utility functions
-
     /**
      * Compare this number to other number.
      *
      * @param other Other number, also a Num
-     *
      * @return +1 if this number is greater, 0 if numbers are equal, -1 if other number is greater
      */
     public int compareTo(Num other) {
@@ -695,6 +682,11 @@ public class Num implements Comparable<Num> {
         return output.toString().trim();
     }
 
+    /**
+     * Returns string representation in base 10
+     *
+     * @return String representation of Num
+     */
     public String toString() {
         Num result = this.convertBase(10);
         StringBuilder output = new StringBuilder();
@@ -707,13 +699,19 @@ public class Num implements Comparable<Num> {
         return output.toString();
     }
 
+    /**
+     * Returns the base for this object
+     *
+     * @return base(long)
+     */
     public long base() {
         return base;
     }
 
     /**
-     * Utility function for testing in convertBase for base lower than 56
-     * @return
+     * Utility function for testing in convertBase for base lower than 56. Used in tests.
+     *
+     * @return String
      */
     public String printNumberByBase() {
         StringBuilder output = new StringBuilder();
@@ -728,13 +726,13 @@ public class Num implements Comparable<Num> {
 
 
     /**
+     * Convert base of current Num and return a new Num object with new base
      *
-     *
-     * @param newBase - the new base in which the number needs to be calculated. 
-     * @return the number in the new base. 
-     *
-     * Here each digit in the array is taken and converted into NUM format using the long constructor. 
-     * And then hornors method is calculated with each digit represented in the new base format. 
+     * @param newBase - the new base in which the number needs to be calculated.
+     * @return the number in the new base.
+     * <p>
+     * Here each digit in the array is taken and converted into NUM format using the long constructor.
+     * And then hornors method is calculated with each digit represented in the new base format.
      */
     public Num convertBase(long newBase) {
         if (newBase < 2) {
@@ -759,6 +757,7 @@ public class Num implements Comparable<Num> {
     /**
      * Divide by 2 basic division logic
      * this function is used during binary search for normal division
+     *
      * @return Num / 2
      */
     public Num by2() {
@@ -776,19 +775,15 @@ public class Num implements Comparable<Num> {
         return new Num(removeTrailingZeros(arr2), this.base, isNegative);
     }
 
-    // Evaluate an expression in postfix and return resulting number
-    // Each string is one of: "*", "+", "-", "/", "%", "^", "0", or
-    // a number: [1-9][0-9]*.  There is no unary minus operator.
     /**
-     *
-     * @param expr - each string is either an operator or an operand. 
+     * @param expr - each string is either an operator or an operand.
      * @return the evaluation of that number.
-     *
-     * Data structure used is a stack. 
-     *
-     * if the input is an operand(Num). it is pushed into the stack. 
-     * If the input is an operator. two NUMs are popped and their respective expression 
-     * is calculated. 
+     * <p>
+     * Data structure used is a stack.
+     * <p>
+     * if the input is an operand(Num). it is pushed into the stack.
+     * If the input is an operator. two NUMs are popped and their respective expression
+     * is calculated.
      */
     public static Num evaluatePostfix(String[] expr) {
 
@@ -831,9 +826,13 @@ public class Num implements Comparable<Num> {
         return stack.pop();
     }
 
-    // Evaluate an expression in infix and return resulting number
-    // Each string is one of: "*", "+", "-", "/", "%", "^", "(", ")", "0", or
-    // a number: [1-9][0-9]*.  There is no unary minus operator.
+    /**
+     * Evaluate an infix expression given as string array.
+     * Internally, just converts to postfix and then evaluates it.
+     *
+     * @param expr String array containing numbers and operators
+     * @return result of the expression as a Num object
+     */
     public static Num evaluateInfix(String[] expr) {
         return evaluatePostfix(convertInfixToPostfix(expr));
     }
