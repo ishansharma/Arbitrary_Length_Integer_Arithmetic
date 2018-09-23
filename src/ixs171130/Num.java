@@ -584,7 +584,7 @@ public class Num implements Comparable<Num> {
         Num mid, midsq, sum;
 
         Num end = new Num(a.by2());
-        Num ans = new Num("-1");
+        Num ans = new Num("1");
 
         int comparision;
 
