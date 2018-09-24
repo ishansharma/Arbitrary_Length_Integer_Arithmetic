@@ -1,6 +1,7 @@
 package ixs171130;
 
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 /**
@@ -57,6 +58,10 @@ public class Num implements Comparable<Num> {
             throw new ArithmeticException("Empty string given to constructor. Can't parse as a number");
         }
 
+        Pattern pattern = Pattern.compile("\\d+");
+        if(!pattern.matcher(s).matches()){
+            throw new ArithmeticException("String should consist only digits");
+        }
         int j = 0;
         char[] input = s.toCharArray();
         for (int i = s.length() - 1; i >= 0; i--) {
