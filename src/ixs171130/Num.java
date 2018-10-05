@@ -16,6 +16,7 @@ public class Num implements Comparable<Num> {
     // setting base to 1 followed by 9 zeroes because square root of (2^63 - 1) is 3037000448
     // which has 10 digits. So that's max safe base.
     // Using the nearest power of 10 because that's simpler to represent and test
+    static final long toStringBase = 1000000000;
     static final long defaultBase = 1000000000L;
     long base = defaultBase;
     long[] arr;  // array to store arbitrarily large integers
@@ -431,12 +432,23 @@ public class Num implements Comparable<Num> {
             return new Num(1);
         }
 
-        Num temp;
-        temp = power(a, n / 2);
-        if (n % 2 == 0)
-            return (product(temp, temp));
-        else
-            return (product(a, product(temp, temp)));
+        Num res = new Num(1);
+        Num temp = new Num(a);
+        while(n != 0) {
+            if (n % 2 == 1) {
+                res = product(res, temp);
+            }
+            n = n /2;
+            temp = product(temp, temp);
+        }
+        return res;
+
+//        temp = power(a, n / 2);
+//        if (n % 2 == 0)
+//            return (product(temp, temp));
+//        else
+//            return (product(a, product(temp, temp)));
+
     }
 
     /**
@@ -684,13 +696,22 @@ public class Num implements Comparable<Num> {
      * @return String representation of Num
      */
     public String toString() {
-        Num result = this.convertBase(10);
+        Num result = this.convertBase(toStringBase);
+        int noOfZeros = ((Long) toStringBase).toString().length() - ((Long) toStringBase).toString().replace("0", "").length();
+
         StringBuilder output = new StringBuilder();
         if (isNegative) {
             output.append("-");
         }
         for (int i = result.arr.length - 1; i >= 0; i--) {
-            output.append(result.arr[i]);
+            String res = Long.toString(result.arr[i]);
+            if (res.length() < noOfZeros && i != result.arr.length - 1) {
+                int subs = noOfZeros - res.length();
+                for (int j =0; j< subs; j++) {
+                    res = "0" + res;
+                }
+            }
+            output.append(res);
         }
         return output.toString();
     }
@@ -731,6 +752,10 @@ public class Num implements Comparable<Num> {
      * And then hornors method is calculated with each digit represented in the new base format.
      */
     public Num convertBase(long newBase) {
+        if (newBase == this.base) {
+            return this;
+        }
+
         if (newBase < 2) {
             throw new ArithmeticException("Base can not be less than 2");
         }
